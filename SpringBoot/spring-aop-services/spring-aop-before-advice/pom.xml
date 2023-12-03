@@ -39,8 +39,8 @@
         <checkstyle.threshold>0</checkstyle.threshold>
 
         <!-- logging -->
-        <slf4j-api.version>2.0.6</slf4j-api.version>
-        <slf4j-log4j12.version>2.0.6</slf4j-log4j12.version>
+        <slf4j-api.version>2.0.9</slf4j-api.version>
+        <slf4j-log4j12.version>2.0.9</slf4j-log4j12.version>
 
         <!-- appsuite -->
         <appsuite-framework-core.version>0.0.23</appsuite-framework-core.version>
