@@ -62,7 +62,7 @@
         <swagger.skip>false</swagger.skip>
 
         <slf4j-api.version>1.7.30</slf4j-api.version>
-        <logback-classic.version>1.2.3</logback-classic.version>
+        <logback-classic.version>1.2.13</logback-classic.version>
 
         <!-- csv parser version -->
         <commons-csv.version>1.9.0</commons-csv.version>
