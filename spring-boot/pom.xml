@@ -73,7 +73,7 @@
 
         <!-- junit-jupiter-params -->
         <junit-jupiter-params.version>5.9.2</junit-jupiter-params.version>
-        <junit.version>4.13</junit.version>
+        <junit.version>4.13.1</junit.version>
 
     </properties>
 
