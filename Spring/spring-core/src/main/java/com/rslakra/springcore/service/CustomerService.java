@@ -1,11 +1,11 @@
 /**
- * 
+ *
  */
 package com.rslakra.springcore.service;
 
-import java.util.List;
-
 import com.rslakra.springcore.model.Customer;
+
+import java.util.List;
 
 /**
  * @author Rohtash Singh Lakra
@@ -14,11 +14,11 @@ import com.rslakra.springcore.model.Customer;
  */
 public interface CustomerService {
 
-	/**
-	 * Returns the list of <code>Customer</code>.
-	 * 
-	 * @return
-	 */
-	List<Customer> findCustomers();
+    /**
+     * Returns the list of <code>Customer</code>.
+     *
+     * @return
+     */
+    List<Customer> findCustomers();
 
 }

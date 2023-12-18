@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.rslakra.springjava;
 
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  *
  */
 @Configuration
-@ComponentScan({ "com.rslakra.dspringcore" })
+@ComponentScan({"com.rslakra.dspringcore"})
 public class AppConfig {
 
 }

@@ -1,11 +1,11 @@
 /**
- * 
+ *
  */
 package com.rslakra.springannotation.repository;
 
-import java.util.List;
-
 import com.rslakra.springannotation.model.Customer;
+
+import java.util.List;
 
 /**
  * @author Rohtash Singh Lakra
@@ -14,11 +14,11 @@ import com.rslakra.springannotation.model.Customer;
  */
 public interface CustomerRepository {
 
-	/**
-	 * Returns the list of customers.
-	 * 
-	 * @return
-	 */
-	List<Customer> findCustomers();
+    /**
+     * Returns the list of customers.
+     *
+     * @return
+     */
+    List<Customer> findCustomers();
 
 }

@@ -1,13 +1,13 @@
 /**
- * 
+ *
  */
 package com.rslakra.springcore.service;
 
-import java.util.List;
-
-import com.rslakra.springcore.repository.CustomerRepository;
 import com.rslakra.springcore.model.Customer;
+import com.rslakra.springcore.repository.CustomerRepository;
 import com.rslakra.springcore.repository.CustomerRepositoryImpl;
+
+import java.util.List;
 
 /**
  * @author Rohtash Singh Lakra
@@ -16,16 +16,16 @@ import com.rslakra.springcore.repository.CustomerRepositoryImpl;
  */
 public class CustomerServiceImpl implements CustomerService {
 
-	private CustomerRepository customerRepository = new CustomerRepositoryImpl();
+    private CustomerRepository customerRepository = new CustomerRepositoryImpl();
 
-	/**
-	 * (non-Javadoc)
-	 * 
-	 * @see CustomerService#findCustomers()
-	 */
-	@Override
-	public List<Customer> findCustomers() {
-		return customerRepository.findCustomers();
-	}
+    /**
+     * (non-Javadoc)
+     *
+     * @see CustomerService#findCustomers()
+     */
+    @Override
+    public List<Customer> findCustomers() {
+        return customerRepository.findCustomers();
+    }
 
 }
