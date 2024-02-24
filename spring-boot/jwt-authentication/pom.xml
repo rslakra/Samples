@@ -10,7 +10,6 @@
         <version>${revision}</version>
     </parent>
     <!-- services -->
-    <!--<groupId>com.rslakra.services.samples-springboot</groupId>-->
     <!-- email-service-sample -->
     <artifactId>jwt-authentication</artifactId>
     <version>${revision}</version>
@@ -41,7 +40,7 @@
         <checkstyle.threshold>0</checkstyle.threshold>
 
         <!-- appsuite-core -->
-        <appsuite-core.version>0.0.26</appsuite-core.version>
+        <appsuite-core.version>0.0.28</appsuite-core.version>
 
         <!-- appsuite-spring -->
         <appsuite-spring.version>0.0.11</appsuite-spring.version>
