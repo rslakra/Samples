@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 
- * @author Rohtash Singh Lakra
+ * @author Rohtash Lakra
  * @version 1.0.0
  */
 @Component

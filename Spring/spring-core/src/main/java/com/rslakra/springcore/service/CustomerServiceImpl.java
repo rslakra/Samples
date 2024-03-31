@@ -10,7 +10,7 @@ import com.rslakra.springcore.repository.CustomerRepositoryImpl;
 import java.util.List;
 
 /**
- * @author Rohtash Singh Lakra
+ * @author Rohtash Lakra
  * @version 1.0.0
  *
  */

@@ -9,7 +9,7 @@ import com.rslakra.springxml.repository.CustomerRepository;
 import java.util.List;
 
 /**
- * @author Rohtash Singh Lakra
+ * @author Rohtash Lakra
  * @version 1.0.0
  *
  */

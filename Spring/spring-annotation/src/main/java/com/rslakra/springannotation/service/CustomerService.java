@@ -8,7 +8,7 @@ import com.rslakra.springannotation.model.Customer;
 import java.util.List;
 
 /**
- * @author Rohtash Singh Lakra
+ * @author Rohtash Lakra
  * @version 1.0.0
  */
 public interface CustomerService {

@@ -205,7 +205,7 @@ public class RoleServiceImpl extends AbstractServiceImpl<Role, Long> implements 
         LOGGER.debug("+update({})", role);
         role = validate(Operation.UPDATE, role);
         role = roleRepository.save(role);
-        LOGGER.debug("-upsert(), role:{}", role);
+        LOGGER.debug("-update(), role:{}", role);
         return role;
     }
 
@@ -224,7 +224,7 @@ public class RoleServiceImpl extends AbstractServiceImpl<Role, Long> implements 
 
         roles.forEach(role -> validate(Operation.UPDATE, role));
         roles = roleRepository.saveAll(roles);
-        LOGGER.debug("-upsert(), roles:{}", roles);
+        LOGGER.debug("-update(), roles:{}", roles);
         return roles;
     }
 

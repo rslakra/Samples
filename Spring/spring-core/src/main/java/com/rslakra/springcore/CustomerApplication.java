@@ -7,7 +7,7 @@ import com.rslakra.springcore.service.CustomerService;
 import com.rslakra.springcore.service.CustomerServiceImpl;
 
 /**
- * @author Rohtash Singh Lakra
+ * @author Rohtash Lakra
  * @version 1.0.0
  *
  */

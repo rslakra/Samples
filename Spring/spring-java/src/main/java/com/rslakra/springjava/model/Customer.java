@@ -5,7 +5,7 @@ package com.rslakra.springjava.model;
 
 /**
  * 
- * @author Rohtash Singh Lakra
+ * @author Rohtash Lakra
  * @version 1.0.0
  */
 //@Component

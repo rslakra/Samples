@@ -12,7 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 /**
- * @author Rohtash Lakra (rlakra)
+ * @author Rohtash Lakra
  * @created 5/25/22 4:58 PM
  */
 
@@ -32,16 +32,16 @@ public class Task extends AbstractEntity<Long> {
     @Column(name = "priority")
     private Integer priority;
 
-    //    @JsonSerialize(using = LocalDateSerializer.class)
-//    @JsonDeserialize(using = LocalDateDeserializer.class)
-////    @JsonFormat(pattern = TimeUtils.LOCAL_DATE_TIME_FORMAT)
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    // @JsonSerialize(using = LocalDateSerializer.class)
+    // @JsonDeserialize(using = LocalDateDeserializer.class)
+    // @JsonFormat(pattern = TimeUtils.LOCAL_DATE_TIME_FORMAT)
+    // @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @Column(name = "start_date")
     private Date startDate;
 
-    //    @JsonSerialize(using = LocalDateSerializer.class)
-//    @JsonDeserialize(using = LocalDateDeserializer.class)
-//    @JsonFormat(pattern = TimeUtils.LOCAL_DATE_TIME_FORMAT)
+    // @JsonSerialize(using = LocalDateSerializer.class)
+    // @JsonDeserialize(using = LocalDateDeserializer.class)
+    // @JsonFormat(pattern = TimeUtils.LOCAL_DATE_TIME_FORMAT)
     @Column(name = "end_date")
     private Date endDate;
 

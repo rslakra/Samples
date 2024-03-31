@@ -36,13 +36,13 @@ public class UserWebController extends AbstractWebController<User, Long> {
         this.userService = userService;
     }
 
-//    /**
+// /**
 //     * @param id
 //     */
-//    @Override
-//    public void validate(Optional<Long> id) {
+// @Override
+// public void validate(Optional<Long> id) {
 //        super.validate(id);
-//    }
+// }
 
     /**
      * Saves the <code>t</code> object.
@@ -119,8 +119,8 @@ public class UserWebController extends AbstractWebController<User, Long> {
      * @param userId
      * @return
      */
-    @RequestMapping(path = {"/create", "/update/{userId}"})
-    public String editObject(Model model, @PathVariable(name = "userId") Optional<Long> userId) {
+    @GetMapping(path = {"/create", "/update/{userId}"})
+    public String editObject(Model model, @PathVariable(name = "userId", required = false) Optional<Long> userId) {
         User user = null;
         if (userId.isPresent()) {
             user = userService.getById(userId.get());
