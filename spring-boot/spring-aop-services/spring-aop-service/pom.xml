@@ -60,7 +60,7 @@
         <slf4j.version>1.7.5</slf4j.version>
 
         <!-- Spring -->
-        <spring-framework.version>4.0.2.RELEASE</spring-framework.version>
+        <spring-framework.version>5.2.22.RELEASE</spring-framework.version>
 
         <!-- AspectJ -->
         <aspectj.version>1.7.4</aspectj.version>
