@@ -1,6 +1,6 @@
 package com.rslakra.springbootsamples.aopbeforeadvice.aspect;
 
-import com.devamatre.appsuite.spring.aop.AopUtils;
+import com.rslakra.appsuite.spring.aop.AopUtils;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;

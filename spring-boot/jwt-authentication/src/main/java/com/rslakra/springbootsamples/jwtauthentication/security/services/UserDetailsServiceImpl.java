@@ -1,6 +1,6 @@
 package com.rslakra.springbootsamples.jwtauthentication.security.services;
 
-import com.devamatre.appsuite.spring.exception.NoRecordFoundException;
+import com.rslakra.appsuite.spring.exception.NoRecordFoundException;
 import com.rslakra.springbootsamples.jwtauthentication.persistence.model.IdentityDO;
 import com.rslakra.springbootsamples.jwtauthentication.persistence.repository.IdentityRepository;
 import org.slf4j.Logger;

@@ -1,7 +1,7 @@
 package com.rslakra.iws.taskservice.account.service;
 
-import com.devamatre.appsuite.core.enums.RoleType;
-import com.devamatre.appsuite.spring.service.AbstractService;
+import com.rslakra.appsuite.core.enums.RoleType;
+import com.rslakra.appsuite.spring.service.AbstractService;
 import com.rslakra.iws.taskservice.account.persistence.entity.User;
 
 import java.util.List;

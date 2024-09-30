@@ -1,6 +1,6 @@
 package com.rslakra.iws.taskservice.task.persistence.repository;
 
-import com.devamatre.appsuite.spring.persistence.repository.BaseRepository;
+import com.rslakra.appsuite.spring.persistence.repository.BaseRepository;
 import com.rslakra.iws.taskservice.task.persistence.entity.Task;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;

@@ -1,6 +1,6 @@
 package com.rslakra.iws.taskservice.account.service;
 
-import com.devamatre.appsuite.spring.service.AbstractService;
+import com.rslakra.appsuite.spring.service.AbstractService;
 import com.rslakra.iws.taskservice.account.persistence.entity.Role;
 
 import java.util.List;

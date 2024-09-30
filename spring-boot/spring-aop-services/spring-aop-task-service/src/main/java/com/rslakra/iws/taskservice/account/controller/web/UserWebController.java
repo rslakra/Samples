@@ -1,8 +1,8 @@
 package com.rslakra.iws.taskservice.account.controller.web;
 
-import com.devamatre.appsuite.spring.controller.web.AbstractWebController;
-import com.devamatre.appsuite.spring.filter.Filter;
-import com.devamatre.appsuite.spring.parser.Parser;
+import com.rslakra.appsuite.spring.controller.web.AbstractWebController;
+import com.rslakra.appsuite.spring.filter.Filter;
+import com.rslakra.appsuite.spring.parser.Parser;
 import com.rslakra.iws.taskservice.account.persistence.entity.User;
 import com.rslakra.iws.taskservice.account.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

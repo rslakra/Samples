@@ -1,8 +1,8 @@
 package com.rslakra.iws.taskservice.task.controller;
 
-import com.devamatre.appsuite.core.Payload;
-import com.devamatre.appsuite.spring.controller.rest.AbstractRestController;
-import com.devamatre.appsuite.spring.filter.Filter;
+import com.rslakra.appsuite.core.Payload;
+import com.rslakra.appsuite.spring.controller.rest.AbstractRestController;
+import com.rslakra.appsuite.spring.filter.Filter;
 import com.rslakra.iws.taskservice.task.filter.TaskFilter;
 import com.rslakra.iws.taskservice.task.persistence.entity.Task;
 import com.rslakra.iws.taskservice.task.service.TaskService;

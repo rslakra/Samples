@@ -1,9 +1,9 @@
 package com.rslakra.iws.taskservice.account.controller.web;
 
-import com.devamatre.appsuite.core.BeanUtils;
-import com.devamatre.appsuite.spring.controller.web.AbstractWebController;
-import com.devamatre.appsuite.spring.filter.Filter;
-import com.devamatre.appsuite.spring.parser.Parser;
+import com.rslakra.appsuite.core.BeanUtils;
+import com.rslakra.appsuite.spring.controller.web.AbstractWebController;
+import com.rslakra.appsuite.spring.filter.Filter;
+import com.rslakra.appsuite.spring.parser.Parser;
 import com.rslakra.iws.taskservice.account.persistence.entity.Role;
 import com.rslakra.iws.taskservice.account.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
