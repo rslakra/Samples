@@ -6,6 +6,9 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * <code>https://docs.spring.io/spring-framework/reference/core/aop/ataspectj/pointcuts.html</code>
+ */
 @Aspect
 public class EmployeeAspectPointcut {
 
@@ -31,7 +34,10 @@ public class EmployeeAspectPointcut {
         LOGGER.debug("allServiceMethodsAdvice() -Before executing service method");
     }
 
-    //Pointcut to execute on all the methods of classes in a package
+
+    /**
+     * Pointcut to execute on all the methods of classes in a package
+     */
     @Pointcut("within(com.rslakra.aopservice.service.*)")
     public void allMethodsPointcut() {
         LOGGER.debug("allMethodsPointcut()");
