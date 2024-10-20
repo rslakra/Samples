@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.rslakra.springcore;
 
@@ -12,13 +12,12 @@ import com.rslakra.springcore.service.CustomerServiceImpl;
  *
  */
 public class CustomerApplication {
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		CustomerService customerService = new CustomerServiceImpl();
-		System.out.println(customerService.findCustomers());
-	}
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        CustomerService customerService = new CustomerServiceImpl();
+        System.out.println(customerService.findCustomers());
+    }
 
 }

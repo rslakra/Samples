@@ -10,7 +10,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 /**
  * @author Rohtash Lakra
  * @version 1.0.0
- *
  */
 public class CustomerApplication {
 

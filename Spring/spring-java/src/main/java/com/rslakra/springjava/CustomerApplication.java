@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.rslakra.springjava;
 
@@ -14,13 +14,13 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
  */
 public class CustomerApplication {
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		ApplicationContext appContext = new AnnotationConfigApplicationContext(AppConfig.class);
-		CustomerService customerService = appContext.getBean("customerService", CustomerService.class);
-		System.out.println(customerService.findCustomers());
-	}
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        ApplicationContext appContext = new AnnotationConfigApplicationContext(AppConfig.class);
+        CustomerService customerService = appContext.getBean("customerService", CustomerService.class);
+        System.out.println(customerService.findCustomers());
+    }
 
 }
