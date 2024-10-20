@@ -18,9 +18,7 @@ public class EmployeeXMLConfigAspect {
             LOGGER.error(ex.getLocalizedMessage(), ex);
         }
 
-        LOGGER.debug(
-            "-employeeAroundAdvice(), EmployeeXMLConfigAspect:: After invoking getName() method. Return response={}",
-            response);
+        LOGGER.debug("-employeeAroundAdvice(), EmployeeXMLConfigAspect:: After invoking getName() method. Return response={}", response);
         return response;
     }
 }

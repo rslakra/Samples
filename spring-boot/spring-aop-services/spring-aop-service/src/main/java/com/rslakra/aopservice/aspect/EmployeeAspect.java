@@ -17,6 +17,6 @@ public class EmployeeAspect {
 
     @Before("execution(* com.rslakra.aopservice.service.*.get*())")
     public void getAllAdvice() {
-        LOGGER.debug("Service method getter called");
+        LOGGER.debug("Service getter() method is called");
     }
 }
