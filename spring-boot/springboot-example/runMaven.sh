@@ -2,5 +2,5 @@
 #Author: Rohtash Lakra
 clear
 echo
-./mvnw -DskipTests spring-boot:run
+mvn spring-boot:run -DskipTests
 echo
