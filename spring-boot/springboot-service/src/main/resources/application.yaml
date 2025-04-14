@@ -1,9 +1,9 @@
 # Server Settings
 #
-#server:
-#  port: 8080
+server:
+  port: 8080
 #  servlet:
-#    context-path: /rslakra
+#    context-path: /springboot-service
 
 #management:
 #  server:
@@ -20,7 +20,7 @@
 spring:
   main:
     allow-bean-definition-overriding: true
-
+  
   #
   # JPA Settings
   #
@@ -34,7 +34,7 @@ spring:
       #      ddl-auto: update
       ddl-auto: create-drop
     database-platform: org.hibernate.dialect.H2Dialect
-
+  
   #
   # H2 Database Settings
   #
@@ -43,7 +43,7 @@ spring:
     driverClassName: org.h2.Driver
     username: sa
     password:
-
+  
   #
   # Enabling H2 Console
   # http://localhost:8080/h2
@@ -52,3 +52,29 @@ spring:
     console:
       enabled: true
       path: /h2
+
+#
+# thymeleaf
+#
+  application:
+    name: SpringBoot Service
+  thymeleaf:
+    cache: false
+    enabled: true
+    prefix: classpath:/templates/
+    suffix: .html
+  error:
+    path: /error
+    whitelabel:
+      enabled: false
+      
+  #To use cache busting, the following configuration will configure a cache busting solution for all static resources,
+  # effectively adding a content hash in URLs, such as <link href="/css/spring-2a2d595e6ed9a0b24f027f2b63b134d6.css"/>:
+  web:
+    resources:
+      chain:
+        strategy:
+          content:
+            enabled: true
+            paths: /**
+
