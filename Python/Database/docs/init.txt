@@ -1,0 +1,25 @@
+/apidoc for the doc-generated API docs
+/code for the project files
+/doc for most documentation
+/lib for your C-language libraries
+/scripts or /bin for that kind of command-line interface stuff
+/tests for your tests
+
+
+Sample/
+|-- code/
+|   |-- __init__.py
+|   |-- main.py
+|
+|-- docs/
+|   |-- init.txt
+|
+|-- scripts/
+|   |-- build.sh
+|
+|-- tests/
+|   |-- __init__.py
+|   |-- test_main.py
+|
+|-- setup.py
+|-- README
