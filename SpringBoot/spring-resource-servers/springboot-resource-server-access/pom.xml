@@ -12,7 +12,7 @@
         <relativePath/>
     </parent>
     <!-- services -->
-    <groupId>com.rslakra.samples.spring-boot.spring-resource-servers</groupId>
+    <groupId>com.rslakra.samples.spring-boot</groupId>
     <artifactId>springboot-resource-server-access</artifactId>
     <version>${revision}</version>
     <packaging>jar</packaging>
