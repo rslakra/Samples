@@ -3,13 +3,13 @@ package com.rslakra.springbootsamples.emailservice;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SpringBootSampleApplication {
+public class SpringBootEmailServiceApplication {
 
     /**
      * @param args
      */
     public static void main(String[] args) {
-        org.springframework.boot.SpringApplication.run(SpringBootSampleApplication.class, args);
+        org.springframework.boot.SpringApplication.run(SpringBootEmailServiceApplication.class, args);
     }
 
 }

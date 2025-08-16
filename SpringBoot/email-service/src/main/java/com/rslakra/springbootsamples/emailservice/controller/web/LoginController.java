@@ -1,6 +1,7 @@
 package com.rslakra.springbootsamples.emailservice.controller.web;
 
 
+import com.rslakra.appsuite.core.BeanUtils;
 import com.rslakra.springbootsamples.emailservice.Constants;
 import com.rslakra.springbootsamples.emailservice.domain.user.UserInfo;
 import com.rslakra.springbootsamples.emailservice.service.UserInfoService;
@@ -16,12 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Rohtash Lakra
@@ -29,19 +29,19 @@ import javax.servlet.http.HttpSession;
  */
 @Controller
 public class LoginController {
-
+    
     // LOGGER
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
-
+    
     @Autowired
     private UserInfoService userService;
-
+    
     private String username;
     private String password;
-    private String username_error;
-    private String password_error;
+    private String userNameError;
+    private String passwordError;
     private Map<String, String> errors;
-
+    
     /**
      * Method to render the login page
      *
@@ -68,7 +68,7 @@ public class LoginController {
         }
         return Constants.URL_LOGIN;
     }
-
+    
     /**
      * Method to handle the user authentication request.
      *
@@ -89,20 +89,20 @@ public class LoginController {
         String homePage = Constants.URL_USER_HOME;
         // if fields are empty or invalid input return error
         if (!validateLoginForm()) {
-            if (!username_error.trim().isEmpty()) {
-                redir.addFlashAttribute("username_error", username_error);
+            if (!userNameError.trim().isEmpty()) {
+                redir.addFlashAttribute("username_error", userNameError);
             }
-            if (!password_error.trim().isEmpty()) {
-                redir.addFlashAttribute("password_error", password_error);
+            if (!passwordError.trim().isEmpty()) {
+                redir.addFlashAttribute("password_error", passwordError);
             }
             if (errors.size() > 0) {
                 redir.addFlashAttribute("errors", errors);
             }
             return "redirect:" + Constants.URL_LOGIN;
         }
-
+        
         UserInfo user = userService.getUserByName(username);
-
+        
         // validate the password
         boolean isValidUser = false;
         if (user != null) {
@@ -110,7 +110,7 @@ public class LoginController {
         } else {
             isValidUser = AppUtils.isValidPassword("this", "wont", "match"); // beware of timing
         }
-
+        
         // if password doesn't match return error
         if (!isValidUser || user == null) {
             redir.addFlashAttribute("errorMessage", Constants.MSG_BAD_LOGIN_INPUT);
@@ -124,10 +124,10 @@ public class LoginController {
         session.setAttribute("isValidUser", true);
         session.setAttribute("isAdmin", isAdmin);
         session.setAttribute("username", ESAPI.encoder().encodeForHTML(user.getUserName()));
-
+        
         return "redirect:" + homePage;
     }
-
+    
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public String logoutUser(HttpServletRequest request, HttpServletResponse response,
                              Model model, RedirectAttributes redir) {
@@ -145,7 +145,7 @@ public class LoginController {
         redir.addFlashAttribute("successMessage", Constants.MSG_LOGOUT_SUCCESS);
         return "redirect:" + Constants.URL_LOGIN;
     }
-
+    
     @RequestMapping(value = "/invalidUser", method = RequestMethod.GET)
     public String logoutInvalidUser(HttpServletRequest request, RedirectAttributes redir) {
         redir.addFlashAttribute("errorMessage", Constants.MSG_INVALID_USER);
@@ -159,12 +159,12 @@ public class LoginController {
         session.invalidate();
         return "redirect:" + Constants.URL_LOGIN;
     }
-
+    
     @RequestMapping(value = "/error", method = RequestMethod.GET)
     public String errorPage(HttpServletRequest request) {
         return Constants.URL_ERROR;
     }
-
+    
     /**
      * Validate for Empty fields
      *
@@ -172,17 +172,18 @@ public class LoginController {
      */
     private boolean validateLoginForm() {
         boolean isValid = true;
-        username_error = "";
-        password_error = "";
+        userNameError = "";
+        passwordError = "";
         errors.clear();
-        if (username == null || username.isEmpty()) {
+        if (BeanUtils.isEmpty(username)) {
             isValid = false;
-            username_error = Constants.MSG_REQUIRED_USERNAME;
+            userNameError = Constants.MSG_REQUIRED_USERNAME;
         }
-        if (password == null || password.isEmpty()) {
+        if (BeanUtils.isEmpty(password)) {
             isValid = false;
-            password_error = Constants.MSG_REQUIRED_PASSWORD;
+            passwordError = Constants.MSG_REQUIRED_PASSWORD;
         }
+        
         if (isValid) {
             boolean isValidInput = hasValidFormInputs();
             if (!isValidInput) {
@@ -191,9 +192,10 @@ public class LoginController {
                 errors.put("invalidUserInput", Constants.MSG_BAD_LOGIN_INPUT);
             }
         }
+        
         return isValid;
     }
-
+    
     /**
      * Validate for invalid value of text fields (xss attacks)
      *
@@ -210,6 +212,7 @@ public class LoginController {
         } catch (IntrusionException e) {
             isValidInput = false;
         }
+        
         return isValidInput;
     }
 }
