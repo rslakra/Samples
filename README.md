@@ -9,14 +9,15 @@ The ```Samples``` project contains various example services.
 ---
 
 ```
-    /
-    ├── <module>                # The module service
-    ├── Python                  # The Python services
-    ├── Spring                  # The Spring services
-    ├── SpringBoot              # The SpringBoot services
-    ├── README.md               # Instructions and helpful links
-    ├── robots.txt              # tells which URLs the search engine crawlers can access on your site
-    └── <module>                # The module service
+/
+├── <module>                        # The module service
+├── Python                          # The Python services
+├── Spring                          # The Spring services
+├── SpringBoot                      # The SpringBoot services
+├── README.md                       # Instructions and helpful links
+├── robots.txt                      # tells which URLs the search engine crawlers can access on your site
+├── <module>                        # The module service
+└── /
 ```
 
 

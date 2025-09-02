@@ -11,13 +11,17 @@ The ```PyServices``` repository helps in the learning of the python language.
 ---
 
 ```
-    /
-    ├── basic                   # The basic python
-    ├── include                 # The include module
-    ├── libs                    # The libs module
-    ├── module                  # The name of the module
-    └── README.md
-    
+/
+├── basic                   # The basic python
+├── include                 # The include module
+├── libs                    # The libs module
+├── module                  # The name of the module
+│    ├── README.md                  # Instructions and helpful links
+│    └── /
+├── README.md                       # Instructions and helpful links
+├── robots.txt                      # tells which URLs the search engine crawlers can access on your site
+├── <module>                        # The module service
+└── /
 ```
 
 ## Python Projects Structures
