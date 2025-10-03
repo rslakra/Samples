@@ -21,7 +21,7 @@ DATE_TIMESTAMP:=$(date '+%Y-%m-%d')
 # MODIFY FROM HERE
 # --------------------------------------------------------------
 # App Static Variables
-PROJECT_OWNER=Rohtash
+PROJECT_OWNER=rslakra
 PROJECT_NAME=flask-webapp
 DOCKER_CONTAINER_NAME=flask-webapp
 DOCKER_REPOSITORY:=${PROJECT_OWNER}/${PROJECT__NAME}
@@ -41,7 +41,7 @@ DATABASE_NAME=WebApp
 
 # App Dynamic Variables
 ifndef APP_NAME
-APP_NAME=posts-iws
+APP_NAME=flask-webapp
 endif
 
 ifndef HOST_PORT
@@ -140,11 +140,14 @@ setup:
 	. $(ACTIVATE)
 
 
+#
+# Install Packages
+#
+
 install-packages: ## Installs packages/dependencies
 install-packages:
 #     @# Help: Installs packages/dependencies
 	@echo "Installing packages/dependencies ..."
-# 	source $(VENU)/bin/activate
 	$(PIP) install --upgrade pip
 	$(PIP) install -r requirements.txt
 
@@ -171,8 +174,6 @@ test:
 	@$(PYTHON) -m unittest
 	@$(PYTHON) -m pytest
 	-#find coverage/ -mindepth 1 -delete
-#	pytest $${TESTS}
-#	@$(PYTHON) setup.py sdist
 
 
 dist: ## Distributes the application
@@ -188,4 +189,46 @@ lint:
 	flake8 src --count --select=E9,F63,F7,F82 --show-source --statistics
 	# exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
 	flake8 src --count --exit-zero --statistics
+
+
+#
+# Docker Commands
+#
+
+#Builds Docker Container Image
+build-container: ## Builds Docker Container Image
+	@# Help: Builds the docker container image of an app
+	@echo "Building Docker Container Image ..."
+	#docker build --progress=plain -t ${DOCKER_REPOSITORY}:${DOCKER_IMAGE_TAG} --target ${PROJECT_NAME} .
+	docker build -t ${DOCKER_CONTAINER_NAME}:${DOCKER_IMAGE_TAG} .
+
+# Runs the Docker Container
+run-container: ## Runs Docker Container
+	@# Help: Runs the docker container of an app as background service
+	@echo "Running Docker Container ..."
+	@#docker run --name ${DOCKER_CONTAINER_NAME} --rm -p ${HOST_PORT}:${CONTAINER_PORT} -d -e APP_NAME=${APP_NAME} ${DOCKER_IMAGE_TAG}
+	docker run --name ${DOCKER_CONTAINER_NAME} --rm -p ${HOST_PORT}:${CONTAINER_PORT} -d ${PROJECT_NAME}:${DOCKER_IMAGE_TAG}
+	@#docker container run --name ${DOCKER_CONTAINER_NAME} --rm -p ${HOST_PORT}:${CONTAINER_PORT} -d ${PROJECT_NAME}:${DOCKER_IMAGE_TAG}
+
+
+# Shows Docker Container Logs
+log-container: ## Shows Docker Container Logs
+	@# Help: Shows the docker container's log of an app
+	@echo "Showing Docker Container Logs [${DOCKER_CONTAINER_NAME}] ..."
+	docker logs -f ${DOCKER_CONTAINER_NAME}
+	#docker container logs -f ${DOCKER_CONTAINER_NAME}
+
+# Executes the bash shell in the specified container, giving you a basic shell prompt.
+# To exit back out of the container, type exit then press ENTER:
+bash-container: ## Executes the 'bash' shell in the container
+	@# Help: Executes the 'bash' shell in the container, giving you a basic shell prompt.
+	@echo "Executing Docker Container [${DOCKER_CONTAINER_NAME}] ..."
+	docker exec -it ${DOCKER_CONTAINER_NAME} bash
+
+# Stops Docker Container
+stop-container: ## Stops Docker Container
+	@# Help: Stops the docker container of an app
+	@echo "Stopping Docker Container [${DOCKER_CONTAINER_NAME}] ..."
+	docker stop ${DOCKER_CONTAINER_NAME}
+	docker container rm ${DOCKER_CONTAINER_NAME}
 
