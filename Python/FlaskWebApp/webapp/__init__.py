@@ -101,6 +101,7 @@ class WebApp:
         with app.app_context():
             current_app.logger.debug(
                 f"Running Application [{app.name}] on version [{flask_version}] with testMode [{test_mode}] ...")
+            current_app.logger.info(f"Running on http://{self.get_env(self.__HOST)}:{self.get_env(self.__PORT)}/webapp")
 
         # print(f"Running Application [{app.name}] on version [{flask.__version__}] with testMode [{test_mode}] ...")
         # print(f"Running Application [{app.name}] on version [{flask_version}] with testMode [{test_mode}] ...")

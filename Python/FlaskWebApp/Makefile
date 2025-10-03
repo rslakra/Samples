@@ -12,6 +12,7 @@ ROOT_DIR:=${PWD}
 VENV:=venv
 PYTHON=$(VENV)/bin/python
 PIP=$(VENV)/bin/pip
+ACTIVATE=$(VENV)/bin/activate
 REMOVE_FILES:=__pycache__
 # Date Settings
 TIMESTAMP:=$(date +%s)
@@ -21,8 +22,8 @@ DATE_TIMESTAMP:=$(date '+%Y-%m-%d')
 # --------------------------------------------------------------
 # App Static Variables
 PROJECT_OWNER=Rohtash
-PROJECT_NAME=posts-iws
-DOCKER_CONTAINER_NAME=posts-iws
+PROJECT_NAME=flask-webapp
+DOCKER_CONTAINER_NAME=flask-webapp
 DOCKER_REPOSITORY:=${PROJECT_OWNER}/${PROJECT__NAME}
 # --------------------------------------------------------------
 # MySQL Settings
@@ -30,13 +31,13 @@ DOCKER_REPOSITORY:=${PROJECT_OWNER}/${PROJECT__NAME}
 NETWORK_NAME=mysql-network
 MYSQL_CONTAINER_NAME=mysql-docker
 MYSQL_ROOT_PASSWORD=root
-MYSQL_DATABASE=posts
+MYSQL_DATABASE=WebApp
 # --------------------------------------------------------------
 # Database Settings
 # --------------------------------------------------------------
 DATABASE_USERNAME=root
 DATABASE_PASSWORD=
-DATABASE_NAME=posts
+DATABASE_NAME=WebApp
 
 # App Dynamic Variables
 ifndef APP_NAME
@@ -109,18 +110,6 @@ help:
 	$(call find.functions)
 	@echo
 
-setup: ## Sets up environment and installs requirements
-setup:
-	@# Help: Sets up environment and installs requirements
-	@echo "Setting up the Python environment ..."
-	python3 -m pip install virtualenv
-	python3 -m $(VENV) $(VENV)
-	#source $(VENV)/bin/activate
-	. $(VENV)/bin/activate
-	$(PIP) install --upgrade pip
-	$(PYTHON) -m pip install -r requirements.txt
-
-
 #
 # Clean Commands
 #
@@ -141,17 +130,30 @@ clean:
 # Virtual Env Commands
 #
 
-venv:
-	@# Help: Sets up environment and installs requirements
-	@echo "Activating Virtual Environment ..."
-	source $(VENV)/bin/activate
+setup: ## Sets up the virtual environment
+setup:
+	@# Help: Sets up the virtual environment
+	@echo "Setting up the python virtual environment ..."
+	python3 -m pip install virtualenv
+	python3 -m $(VENV) $(VENV)
+	#source $(VENV)/bin/activate
+	. $(ACTIVATE)
+
+
+install-packages: ## Installs packages/dependencies
+install-packages:
+#     @# Help: Installs packages/dependencies
+	@echo "Installing packages/dependencies ..."
+# 	source $(VENU)/bin/activate
+	$(PIP) install --upgrade pip
+	$(PIP) install -r requirements.txt
 
 #
 # Run Commands
 #
 
 run: ## Runs the python application
-run: venv
+run:
 	@# Help: Runs the python application
 	@echo "Running Python Application ..."
 	@$(PYTHON) -m flask --app wsgi run --port 8080 --debug
@@ -172,10 +174,12 @@ test:
 #	pytest $${TESTS}
 #	@$(PYTHON) setup.py sdist
 
+
 dist: ## Distributes the application
 dist: test
 	@# Help: Distributes the application
 	python setup.py sdist
+
 
 lint: ## Runs the application, exit if critical rules are broken
 lint:
