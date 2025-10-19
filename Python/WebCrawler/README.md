@@ -9,7 +9,7 @@ developer experience when composing HTTP requests and handling HTML documents.
 
 ## Project Structure
 ```
-/ ap
+/WebCrawler
 ├── <modules>                       # The name of the module
 ├── api                             # The web server
 │    ├── crawler                    # crawler
