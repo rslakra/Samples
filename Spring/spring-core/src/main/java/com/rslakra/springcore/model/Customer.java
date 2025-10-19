@@ -3,11 +3,14 @@
  */
 package com.rslakra.springcore.model;
 
+import java.util.StringJoiner;
+
 /**
  * @author Rohtash Lakra
  * @version 1.0.0
  */
 public class Customer {
+
     private String firstName;
     private String middleName;
     private String lastName;
@@ -69,6 +72,20 @@ public class Customer {
         this.lastName = lastName;
     }
 
+
+    /**
+     * Builds the fields key/value.
+     *
+     * @param fieldName
+     * @param fieldValue
+     * @return
+     */
+    private static String buildFieldJoiner(String fieldName, String fieldValue) {
+        StringJoiner fieldJoiner = new StringJoiner("=");
+        fieldJoiner.add(fieldName).add(fieldValue);
+        return fieldJoiner.toString();
+    }
+
     /**
      * Returns the string representation of this object.
      *
@@ -76,22 +93,11 @@ public class Customer {
      */
     @Override
     public String toString() {
-        StringBuilder sBuilder = new StringBuilder();
-        // first name
-        if (getFirstName() != null) {
-            sBuilder.append(getFirstName());
-        }
-        // middle name
-        if (getMiddleName() != null) {
-            sBuilder.append(" ").append(getMiddleName());
-        }
-
-        // last name
-        if (getLastName() != null) {
-            sBuilder.append(" ").append(getLastName());
-        }
-
-        return sBuilder.toString();
+        StringJoiner joiner = new StringJoiner(" , ", "<", ">");
+        joiner.add(buildFieldJoiner("firstName", getFirstName()));
+        joiner.add(buildFieldJoiner("middleName", getMiddleName()));
+        joiner.add(buildFieldJoiner("lastName", getLastName()));
+        return joiner.toString();
     }
 
 }

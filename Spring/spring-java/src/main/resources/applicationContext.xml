@@ -9,6 +9,6 @@
 
 	<context:annotation-config />
 	<context:component-scan
-		base-package="com.rslakra.dspringcore" />
+		base-package="com.rslakra.springjava" />
 
 </beans-->

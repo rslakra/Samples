@@ -23,10 +23,10 @@ public class CustomerRepositoryImpl implements CustomerRepository {
     @Override
     public List<Customer> findCustomers() {
         List<Customer> customers = new ArrayList<>();
-        customers.add(newCustomer("Rohtash", "Lakra"));
-        customers.add(newCustomer("Rohtash", "Singh"));
-        customers.add(newCustomer("Rohtash", "Singh", "Lakra"));
-        customers.add(newCustomer("Sangita", "Lakra"));
+        customers.add(newCustomer("Roh", "Lak"));
+        customers.add(newCustomer("Roh", "Singh"));
+        customers.add(newCustomer("Roh", "Singh", "Lak"));
+        customers.add(newCustomer("San", "Lak"));
 
         return customers;
 

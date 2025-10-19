@@ -3,6 +3,8 @@
  */
 package com.rslakra.springxml.model;
 
+import java.util.StringJoiner;
+
 /**
  *
  * @author Rohtash Lakra
@@ -72,28 +74,30 @@ public class Customer {
     }
 
     /**
+     * Builds the fields key/value.
+     *
+     * @param fieldName
+     * @param fieldValue
+     * @return
+     */
+    private static String buildFieldJoiner(String fieldName, String fieldValue) {
+        StringJoiner fieldJoiner = new StringJoiner("=");
+        fieldJoiner.add(fieldName).add(fieldValue);
+        return fieldJoiner.toString();
+    }
+
+    /**
      * Returns the string representation of this object.
      *
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-        StringBuilder sBuilder = new StringBuilder();
-        // first name
-        if (getFirstName() != null) {
-            sBuilder.append(getFirstName());
-        }
-        // middle name
-        if (getMiddleName() != null) {
-            sBuilder.append(" ").append(getMiddleName());
-        }
-
-        // last name
-        if (getLastName() != null) {
-            sBuilder.append(" ").append(getLastName());
-        }
-
-        return sBuilder.toString();
+        StringJoiner joiner = new StringJoiner(" , ", "<", ">");
+        joiner.add(buildFieldJoiner("firstName", getFirstName()));
+        joiner.add(buildFieldJoiner("middleName", getMiddleName()));
+        joiner.add(buildFieldJoiner("lastName", getLastName()));
+        return joiner.toString();
     }
 
 }
