@@ -12,8 +12,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpSession;
-import javax.xml.bind.ValidationException;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.ValidationException;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.ArrayList;

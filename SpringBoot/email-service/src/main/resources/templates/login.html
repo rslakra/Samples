@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Email Service</title>
+    <link th:href="@{/css/styles.css}" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Welcome Back</h1>
+            <p>Sign in to your account</p>
+        </div>
+        
+        <!-- Success Message (e.g., logout) -->
+        <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+        
+        <!-- Error Message -->
+        <div th:if="${errorMessage}" class="alert alert-error" th:text="${errorMessage}"></div>
+        
+        <!-- General Errors -->
+        <div th:if="${errors}" class="alert alert-error">
+            <div th:each="error : ${errors}">
+                <span th:text="${error.value}"></span>
+            </div>
+        </div>
+        
+        <!-- URL Parameter Messages -->
+        <div th:if="${param.logout}" class="alert alert-success">You have been logged out successfully.</div>
+        <div th:if="${param.error}" class="alert alert-error">Invalid username or password. Please try again.</div>
+        <div th:if="${param.notLoggedIn}" class="alert alert-info">Please log in to continue.</div>
+        
+        <form th:action="@{/authenticate}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <div class="form-group">
+                <label for="user_name">Username or Email</label>
+                <input type="text" id="user_name" name="user_name" placeholder="Enter your username or email" required autofocus>
+                <div th:if="${username_error}" class="error-message" th:text="${username_error}"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <div th:if="${password_error}" class="error-message" th:text="${password_error}"></div>
+            </div>
+            
+            <button type="submit" class="btn-login">Sign In</button>
+        </form>
+        
+        <div class="login-footer">
+            <a th:href="@{/signup}">Don't have an account? Sign up</a><br>
+            <a th:href="@{/forgotPassword}">Forgot your password?</a>
+        </div>
+    </div>
+</body>
+</html>
