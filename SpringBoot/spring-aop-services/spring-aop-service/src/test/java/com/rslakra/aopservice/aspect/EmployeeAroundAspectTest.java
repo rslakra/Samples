@@ -31,7 +31,11 @@ public class EmployeeAroundAspectTest extends BaseAspectTest {
     public void testAroundAdviceWithNull() {
         System.out.println("\n=== Testing Around advice with null return ===");
         
-        // Employee name is null initially
+        // Reset employee name to null to test null return handling
+        // (Employee bean is a singleton, so we need to reset it)
+        employee.setName(null);
+        
+        // Employee name should be null now
         String name = employee.getName();
         
         assertNull(name);

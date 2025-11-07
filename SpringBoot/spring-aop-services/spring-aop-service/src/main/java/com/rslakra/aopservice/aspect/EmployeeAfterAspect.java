@@ -13,7 +13,8 @@ public class EmployeeAfterAspect {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EmployeeAfterAspect.class);
 
-    @After("args(name)")
+    // Exclude aspect classes to avoid infinite recursion
+    @After("args(name) && !within(com.rslakra.aopservice.aspect..*)")
     public void logStringArguments(String name) {
         LOGGER.debug("Running After Advice. String argument passed={}", name);
     }

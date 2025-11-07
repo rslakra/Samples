@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.18</version>
+        <version>3.5.0</version>
         <!-- lookup parent from a repository -->
         <relativePath/>
     </parent>
@@ -37,6 +37,7 @@
         <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
         <maven-checkstyle-plugin.version>3.5.0</maven-checkstyle-plugin.version>
         <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
+        <maven-war-plugin.version>3.4.0</maven-war-plugin.version>
 
         <!-- checkstyle -->
         <code-styles.dir>https://raw.githubusercontent.com/rslakra/code-styles/master</code-styles.dir>
@@ -55,13 +56,8 @@
         <swagger.skip>false</swagger.skip>
 
         <!-- Logging -->
-        <slf4j.version>2.0.17</slf4j.version>
-        <slf4j-api.version>2.0.17</slf4j-api.version>
-        <slf4j-log4j12.version>2.0.17</slf4j-log4j12.version>
-        <slf4j-simple.version>2.0.17</slf4j-simple.version>
-
-        <!-- Spring -->
-        <spring-framework.version>4.0.2.RELEASE</spring-framework.version>
+        <!-- Spring Boot 3.5.0 manages SLF4J 2.x and Logback 1.5.x versions -->
+        <!-- No need to override - let Spring Boot manage them -->
 
         <!-- AspectJ -->
         <aspectj.version>1.9.25</aspectj.version>
@@ -81,16 +77,8 @@
     <dependencies>
 
         <!-- Logging with SLF4J & LogBack -->
-        <!-- Note: Spring Boot Starter already includes logback-classic, so we don't need slf4j-simple -->
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j-api.version}</version>
-        </dependency>
-        
-        <!-- Exclude slf4j-simple if it comes transitively, use logback instead -->
-        <!-- Spring Boot Starter AOP already includes logback-classic -->
+        <!-- Note: Spring Boot Starter already includes slf4j-api and logback-classic -->
+        <!-- Don't override versions - let Spring Boot manage them -->
 
         <!-- SpringBoot Starter -->
         <dependency>
@@ -98,22 +86,10 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
-        <!-- Spring and Transactions -->
+        <!-- Spring Web for RequestContextHolder and ServletRequestAttributes -->
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring-framework.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-            <version>${spring-framework.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>5.2.0.RELEASE</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <!-- AspectJ dependencies -->
@@ -128,7 +104,6 @@
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
             <version>${aspectj.version}</version>
-            <scope>runtime</scope>
         </dependency>
 
         <dependency>
@@ -144,11 +119,10 @@
             <version>3.18.0</version>
         </dependency>
 
-        <!-- Servlets -->
+        <!-- Servlets - Spring Boot 3.x uses Jakarta EE 9+ -->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <version>4.0.1</version>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
         </dependency>
 
         <!-- SpringBoot Tests -->
@@ -188,9 +162,9 @@
                 <artifactId>aspectj-maven-plugin</artifactId>
                 <version>${aspectj-plugin.version}</version>
                 <configuration>
-                    <complianceLevel>16</complianceLevel>
-                    <source>16</source>
-                    <target>16</target>
+                    <complianceLevel>21</complianceLevel>
+                    <source>21</source>
+                    <target>21</target>
                     <showWeaveInfo>true</showWeaveInfo>
                     <verbose>true</verbose>
                     <Xlint>ignore</Xlint>
@@ -206,6 +180,13 @@
                         </goals>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.aspectj</groupId>
+                        <artifactId>aspectjtools</artifactId>
+                        <version>${aspectj.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <!-- maven-surefire-plugin -->
