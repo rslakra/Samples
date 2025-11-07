@@ -26,7 +26,7 @@ public class EmployeeAspectPointcut {
 
     @Pointcut("execution(public String getName())")
     public void getNamePointcut() {
-        LOGGER.debug("getNamePointcut() - Executing getName()");
+        // LOGGER.debug("getNamePointcut() - Executing getName()");
     }
 
     @Before("allMethodsPointcut()")
@@ -40,7 +40,7 @@ public class EmployeeAspectPointcut {
      */
     @Pointcut("within(com.rslakra.aopservice.service.*)")
     public void allMethodsPointcut() {
-        LOGGER.debug("allMethodsPointcut()");
+        // LOGGER.debug("allMethodsPointcut()");
     }
 
 }
