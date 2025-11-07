@@ -33,7 +33,7 @@ public class AuthUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        IdentityDO users = usersRepository.findByUserIdAndStatus(username, UserStatus.ACTIVE);
+        IdentityDO users = usersRepository.findByUserNameAndStatus(username, UserStatus.ACTIVE);
 
         if (users == null) {
             LOGGER.info("User does not exists");

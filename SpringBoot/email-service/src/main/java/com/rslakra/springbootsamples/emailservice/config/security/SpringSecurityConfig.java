@@ -5,13 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -20,9 +18,13 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 /**
  * @author Rohtash Lakra
  * @created 8/12/21 3:28 PM
+ * @deprecated This configuration has been merged into WebSecurityConfig.
+ *             This class is kept for reference but disabled.
+ *             To re-enable, uncomment @Configuration and @EnableWebSecurity annotations.
  */
-@Configuration
-@EnableWebSecurity
+// @Configuration - Disabled: merged into WebSecurityConfig
+// @EnableWebSecurity - Disabled: merged into WebSecurityConfig
+@Deprecated
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     // LOGGER
@@ -110,16 +112,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected AuthenticationManager authenticationManager() throws Exception {
         return super.authenticationManager();
-    }
-
-    /**
-     * @return
-     * @throws Exception
-     */
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
     }
 
     /**

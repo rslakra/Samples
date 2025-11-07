@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,11 +18,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.header.writers.ClearSiteDataHeaderWriter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
 /**
@@ -39,12 +44,32 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenFilter tokenFilter;
 
-    private final PasswordEncoder passwordEncoder;
+    @Lazy
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private final SCPHelper scpHelper;
 
     @Qualifier("userDetailsServiceImpl")
     private final UserDetailsService userDetailsServiceImpl;
+
+    // Public URL patterns that don't require authentication
+    private static final String[] PUBLIC_MATCHERS = {
+        "/webjars/**",
+        "/css/**",
+        "/js/**",
+        "/images/**",
+        "/",
+        "/about/**",
+        "/contact/**",
+        "/error/**/*",
+        "/console/**",
+        "/signup",
+        "/signup/user",
+        "/forgotPassword**",
+        "/reset-password**",
+        "/login"
+    };
 
     @Autowired
     public void configureGlobal(final AuthenticationManagerBuilder auth)
@@ -58,6 +83,43 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean()
         throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    /**
+     * @return UserDetailsService bean
+     * @throws Exception
+     */
+    @Bean
+    @Override
+    public UserDetailsService userDetailsServiceBean() throws Exception {
+        return super.userDetailsServiceBean();
+    }
+
+    /**
+     * @return PasswordEncoder bean
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * @return BCryptPasswordEncoder bean
+     */
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * @return AuthenticationProvider bean
+     */
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsServiceImpl);
+        authenticationProvider.setPasswordEncoder(passwordEncoder);
+        return authenticationProvider;
     }
 
     @Override
@@ -78,26 +140,35 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .exceptionHandling()
             .authenticationEntryPoint(entryPoint)
+            .accessDeniedPage("/403")
             .and()
             .formLogin()
-            .loginPage(Constants.LOGIN_PAGE)
-            .successForwardUrl(Constants.HOME_PAGE_URL)
+            .loginPage(Constants.URL_LOGIN)
+            .defaultSuccessUrl(Constants.HOME_PAGE_URL)
+            .failureUrl(Constants.URL_LOGIN + "?error")
+            .permitAll()
             .and()
             .logout()
             .logoutUrl(Constants.LOGOUT_URL)
+            .logoutRequestMatcher(new AntPathRequestMatcher(Constants.LOGOUT_URL))
             .addLogoutHandler(
                 new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(ClearSiteDataHeaderWriter.Directive.ALL)))
             .clearAuthentication(true)
             .invalidateHttpSession(true)
-            .logoutSuccessUrl(Constants.LOGIN_PAGE)
+            .logoutSuccessUrl(Constants.URL_LOGIN + "?logout")
+            .permitAll()
             .and()
             .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeRequests()
+            .antMatchers(PUBLIC_MATCHERS)
+            .permitAll()
             .antMatchers("/swagger-ui.html/**")
             .permitAll()
+            .anyRequest()
+            .authenticated()
             .and()
             .headers()
-            .contentSecurityPolicy(scpHelper.getAllowList())
+            .contentSecurityPolicy(scpHelper.getAllowList() != null ? scpHelper.getAllowList() : "default-src 'self'")
             .and()
             .httpStrictTransportSecurity()
         ;

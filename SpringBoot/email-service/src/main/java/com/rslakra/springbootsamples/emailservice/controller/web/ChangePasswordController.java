@@ -58,7 +58,7 @@ public class ChangePasswordController {
                                        BindingResult result) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         LoggedInUserRequest loggedInUserRequest = (LoggedInUserRequest) auth.getPrincipal();
-        IdentityDO user = identityRepository.findById(loggedInUserRequest.getUserObjectId());
+        IdentityDO user = identityRepository.findById(loggedInUserRequest.getUserObjectId()).orElse(null);
         if (user == null) {
             return "redirect:/login?notLoggedIn";
         } else if (form.getNewPassword().isEmpty()) {

@@ -13,16 +13,14 @@ import org.springframework.stereotype.Repository;
  * @created 8/12/21 3:22 PM
  */
 @Repository
-public interface IdentityRepository extends JpaRepository<IdentityDO, Long> {
+public interface IdentityRepository extends JpaRepository<IdentityDO, String> {
 
-    IdentityDO findByUserIdAndStatus(String username, UserStatus status);
+    IdentityDO findByUserNameAndStatus(String username, UserStatus status);
 
-    IdentityDO findByMailId(String mailId);
-
-    IdentityDO findById(String id);
+    IdentityDO findByEmail(String email);
 
     @Modifying
-    @Query("update Identity i set i.password = :password where i.id = :id")
+    @Query("update IdentityDO i set i.password = :password where i.id = :id")
     void updatePassword(@Param("id") String id, @Param("password") String password);
 
 }

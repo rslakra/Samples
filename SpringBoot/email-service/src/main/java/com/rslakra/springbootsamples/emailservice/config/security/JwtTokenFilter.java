@@ -1,5 +1,6 @@
 package com.rslakra.springbootsamples.emailservice.config.security;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Rohtash Lakra
  * @created 1/6/22 4:50 PM
  */
+@Component
 public class JwtTokenFilter extends OncePerRequestFilter {
 
     /**
