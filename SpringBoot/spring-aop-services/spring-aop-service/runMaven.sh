@@ -28,4 +28,5 @@ RELEASE_VERSION=$(buildVersion)
 #java -jar target/account-service-$RELEASE_VERSION.jar
 #mvn clean package -DskipTests
 mvn clean spring-boot:run -Drevision=$RELEASE_VERSION
+# mvn clean compile exec:java -Dexec.mainClass="com.rslakra.aopservice.AopService" -Drevision=$RELEASE_VERSION
 echo

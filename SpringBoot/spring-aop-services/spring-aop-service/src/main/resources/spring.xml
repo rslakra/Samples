@@ -24,7 +24,7 @@
     <bean name="employeeAspectJoinPoint" class="com.rslakra.aopservice.aspect.EmployeeAspectJoinPoint"/>
     <bean name="employeeAfterAspect" class="com.rslakra.aopservice.aspect.EmployeeAfterAspect"/>
     <bean name="employeeAroundAspect" class="com.rslakra.aopservice.aspect.EmployeeAroundAspect"/>
-    <bean name="employeeAnnotationAspect" class="com.rslakra.aopservice.aspect.EmployeeAnnotationLoggableAspect"/>
+    <bean name="employeeAnnotationAspect" class="com.rslakra.aopservice.aspect.EmployeeAnnotationAspect"/>
     <bean name="employeeXMLConfigAspect" class="com.rslakra.aopservice.aspect.EmployeeXMLConfigAspect"/>
 
     <!-- Spring AOP XML Configuration -->

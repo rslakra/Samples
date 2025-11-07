@@ -68,6 +68,9 @@
         <!-- AspectJ plugin -->
         <aspectj-plugin.version>1.15.0</aspectj-plugin.version>
 
+        <!-- mainClassPath -->
+        <mainClassPath>com.rslakra.aopservice.AopService</mainClassPath>
+
         <!-- junit-jupiter-params -->
         <junit-jupiter-params.version>5.10.2</junit-jupiter-params.version>
         <junit.version>4.11</junit.version>
@@ -170,6 +173,16 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>${mainClassPath}</mainClass>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- aspectj-maven-plugin -->
