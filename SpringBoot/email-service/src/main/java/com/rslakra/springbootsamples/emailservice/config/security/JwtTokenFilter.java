@@ -27,6 +27,14 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
-
+        // Skip JWT filter for H2 console
+        String path = httpServletRequest.getRequestURI();
+        if (path != null && (path.startsWith("/h2") || path.startsWith("/h2-console"))) {
+            filterChain.doFilter(httpServletRequest, httpServletResponse);
+            return;
+        }
+        
+        // TODO: Implement JWT token validation
+        filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 }

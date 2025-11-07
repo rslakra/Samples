@@ -64,6 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         "/contact/**",
         "/error/**/*",
         "/console/**",
+        "/h2/**",
         "/signup",
         "/signup/user",
         "/forgotPassword**",
@@ -130,13 +131,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .csrfTokenRepository(CookieCsrfTokenRepository
                                      .withHttpOnlyFalse()
             )
+            .ignoringAntMatchers("/h2/**") // Disable CSRF for H2 console
             .and()
-            .requiresChannel()
-            .anyRequest()
-            .requiresSecure()
-            .and()
+            // HTTPS requirement disabled for development
+            // Uncomment below for production HTTPS requirement
+            // .requiresChannel()
+            // .anyRequest()
+            // .requiresSecure()
+            // .and()
             .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // Changed from STATELESS to allow H2 console sessions
             .and()
             .exceptionHandling()
             .authenticationEntryPoint(entryPoint)
@@ -164,13 +168,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .permitAll()
             .antMatchers("/swagger-ui.html/**")
             .permitAll()
+            .antMatchers("/h2/**")
+            .permitAll()
             .anyRequest()
             .authenticated()
             .and()
             .headers()
-            .contentSecurityPolicy(scpHelper.getAllowList() != null ? scpHelper.getAllowList() : "default-src 'self'")
+            .frameOptions()
+            .sameOrigin() // Allow frames for H2 console
             .and()
-            .httpStrictTransportSecurity()
+            .headers()
+            .contentSecurityPolicy("default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'")
+            // HSTS disabled for development (HTTP)
+            // Uncomment below for production HTTPS
+            // .and()
+            // .httpStrictTransportSecurity()
         ;
     }
 }
