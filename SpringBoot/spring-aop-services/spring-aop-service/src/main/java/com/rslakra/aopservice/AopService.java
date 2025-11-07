@@ -23,7 +23,13 @@ public class AopService {
         // change name
         employee.setName("Lakra");
         LOGGER.debug(employee.getName());
-        employee.throwException();
+        
+        // Test exception handling with AOP AfterThrowing advice
+        try {
+            employee.throwException();
+        } catch (RuntimeException e) {
+            LOGGER.debug("Exception caught as expected: {}", e.getMessage());
+        }
 
         ctx.close();
         LOGGER.debug("-main()");
