@@ -36,8 +36,10 @@ public class EmployeeAnnotationAspect {
         }
 
         try {
-            Long waitTime = Long.valueOf(2000L);
-            LOGGER.error("Waiting for {} millis ...", waitTime);
+            // Reduced wait time for testing - use 10ms instead of 2000ms
+            // In production, you might want to use a configurable value
+            Long waitTime = Long.valueOf(10L);
+            LOGGER.debug("Waiting for {} millis ...", waitTime);
             Thread.sleep(waitTime);
         } catch (InterruptedException ex) {
             LOGGER.error("Ignore me");

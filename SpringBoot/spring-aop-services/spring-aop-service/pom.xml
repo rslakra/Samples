@@ -81,19 +81,16 @@
     <dependencies>
 
         <!-- Logging with SLF4J & LogBack -->
+        <!-- Note: Spring Boot Starter already includes logback-classic, so we don't need slf4j-simple -->
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j-api.version}</version>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j-simple.version}</version>
-        </dependency>
+        
+        <!-- Exclude slf4j-simple if it comes transitively, use logback instead -->
+        <!-- Spring Boot Starter AOP already includes logback-classic -->
 
         <!-- SpringBoot Starter -->
         <dependency>
