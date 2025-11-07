@@ -21,7 +21,8 @@ public class EmployeeAspectJoinPoint {
     }
 
     //Advice arguments, will be applied to bean methods with single String argument
-    @Before("args(name)")
+    // Exclude aspect classes to avoid infinite recursion
+    @Before("args(name) && !within(com.rslakra.aopservice.aspect..*)")
     public void logStringArguments(String name) {
         LOGGER.debug("logStringArguments({})", name);
     }
