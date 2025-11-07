@@ -64,9 +64,9 @@
         <spring-framework.version>4.0.2.RELEASE</spring-framework.version>
 
         <!-- AspectJ -->
-        <aspectj.version>1.7.4</aspectj.version>
+        <aspectj.version>1.9.25</aspectj.version>
         <!-- AspectJ plugin -->
-        <aspectj-plugin.version>1.14.0</aspectj-plugin.version>
+        <aspectj-plugin.version>1.15.0</aspectj-plugin.version>
 
         <!-- junit-jupiter-params -->
         <junit-jupiter-params.version>5.10.2</junit-jupiter-params.version>
@@ -77,14 +77,22 @@
     <!-- dependencies -->
     <dependencies>
 
+        <!-- Logging with SLF4J & LogBack -->
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
         <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j-simple.version}</version>
         </dependency>
+
+        <!-- SpringBoot Starter -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
@@ -102,22 +110,20 @@
             <version>${spring-framework.version}</version>
         </dependency>
 
-        <!-- Logging with SLF4J & LogBack -->
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j-api.version}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j-simple.version}</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>5.2.0.RELEASE</version>
         </dependency>
 
         <!-- AspectJ dependencies -->
+        <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>${aspectj.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjrt</artifactId>
@@ -138,17 +144,14 @@
             <version>3.18.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>5.2.0.RELEASE</version>
-        </dependency>
+        <!-- Servlets -->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <version>4.0.1</version>
         </dependency>
 
+        <!-- SpringBoot Tests -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -163,15 +166,21 @@
         <!-- plugins -->
         <plugins>
 
+            <!-- spring-boot-maven-plugin -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
             <!-- aspectj-maven-plugin -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>aspectj-maven-plugin</artifactId>
                 <version>${aspectj-plugin.version}</version>
                 <configuration>
-                    <complianceLevel>${java.version}</complianceLevel>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <complianceLevel>16</complianceLevel>
+                    <source>16</source>
+                    <target>16</target>
                     <showWeaveInfo>true</showWeaveInfo>
                     <verbose>true</verbose>
                     <Xlint>ignore</Xlint>
@@ -212,12 +221,6 @@
                 </configuration>
             </plugin>
 
-            <!-- spring-boot-maven-plugin -->
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-
             <!-- maven-compiler-plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -235,7 +238,7 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${maven-checkstyle-plugin.version}</version>
                 <configuration>
-                    <configLocation>${code-styles.dir}/checkstyle.xml</configLocation>
+                    <configLocation>${code-styles.dir}/styles.xml</configLocation>
                     <propertiesLocation>${code-styles.dir}/checkstyle.properties</propertiesLocation>
                 </configuration>
                 <executions>
@@ -245,7 +248,7 @@
                             <goal>check</goal>
                         </goals>
                         <configuration>
-                            <configLocation>${code-styles.dir}/checkstyle.xml</configLocation>
+                            <configLocation>${code-styles.dir}/styles.xml</configLocation>
                             <logViolationsToConsole>true</logViolationsToConsole>
                             <maxAllowedViolations>${checkstyle.threshold}</maxAllowedViolations>
                         </configuration>
@@ -268,7 +271,7 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>${maven-checkstyle-plugin.version}</version>
                 <configuration>
-                    <configLocation>${code-styles.dir}/checkstyle.xml</configLocation>
+                    <configLocation>${code-styles.dir}/styles.xml</configLocation>
                     <propertiesLocation>${code-styles.dir}/checkstyle.properties</propertiesLocation>
                 </configuration>
             </plugin>
