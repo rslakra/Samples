@@ -17,7 +17,7 @@ public class CustomerApplication {
      * @param args
      */
     public static void main(String[] args) {
-        ApplicationContext appContext = new ClassPathXmlApplicationContext("ApplicationContext.xml");
+        ApplicationContext appContext = new ClassPathXmlApplicationContext("applicationContext.xml");
         CustomerService customerService = appContext.getBean("customerService", CustomerService.class);
         System.out.println(customerService.findCustomers());
     }

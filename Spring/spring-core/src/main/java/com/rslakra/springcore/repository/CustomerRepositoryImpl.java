@@ -4,6 +4,7 @@
 package com.rslakra.springcore.repository;
 
 import com.rslakra.springcore.model.Customer;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  * @version 1.0.0
  *
  */
+@Repository("customerRepository")
 public class CustomerRepositoryImpl implements CustomerRepository {
 
     /**

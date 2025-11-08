@@ -45,6 +45,12 @@
         <!-- swagger -->
         <swagger.skip>false</swagger.skip>
 
+        <!-- spring-context -->
+        <spring-context.version>6.2.12</spring-context.version>
+
+        <!-- mainClassPath -->
+        <mainClassPath>com.rslakra.springannotation.CustomerApplication</mainClassPath>
+
         <!-- junit-jupiter-params -->
         <junit-jupiter-params.version>5.10.2</junit-jupiter-params.version>
 
@@ -57,7 +63,7 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
-            <version>5.3.39</version>
+            <version>${spring-context.version}</version>
         </dependency>
 
     </dependencies>
@@ -103,6 +109,16 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- maven-exec-plugin -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.1</version>
+                <configuration>
+                    <mainClass>${mainClassPath}</mainClass>
+                </configuration>
             </plugin>
         </plugins>
     </build>

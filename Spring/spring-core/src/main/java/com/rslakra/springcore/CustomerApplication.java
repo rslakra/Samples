@@ -4,7 +4,8 @@
 package com.rslakra.springcore;
 
 import com.rslakra.springcore.service.CustomerService;
-import com.rslakra.springcore.service.CustomerServiceImpl;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * @author Rohtash Lakra
@@ -16,7 +17,8 @@ public class CustomerApplication {
      * @param args
      */
     public static void main(String[] args) {
-        CustomerService customerService = new CustomerServiceImpl();
+        ApplicationContext appContext = new AnnotationConfigApplicationContext(AppConfig.class);
+        CustomerService customerService = appContext.getBean("customerService", CustomerService.class);
         System.out.println(customerService.findCustomers());
     }
 

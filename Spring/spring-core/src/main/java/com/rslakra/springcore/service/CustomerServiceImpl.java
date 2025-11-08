@@ -5,7 +5,8 @@ package com.rslakra.springcore.service;
 
 import com.rslakra.springcore.model.Customer;
 import com.rslakra.springcore.repository.CustomerRepository;
-import com.rslakra.springcore.repository.CustomerRepositoryImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -14,9 +15,11 @@ import java.util.List;
  * @version 1.0.0
  *
  */
+@Service("customerService")
 public class CustomerServiceImpl implements CustomerService {
 
-    private CustomerRepository customerRepository = new CustomerRepositoryImpl();
+    @Autowired
+    private CustomerRepository customerRepository;
 
     /**
      * (non-Javadoc)
