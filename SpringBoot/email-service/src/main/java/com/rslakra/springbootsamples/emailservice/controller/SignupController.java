@@ -60,17 +60,20 @@ public class SignupController {
         HttpSession session = request.getSession(false);
         boolean isLoggedIn = false;
         String username = null;
+        String displayName = null;
         
         if (session != null) {
             Object isValidUser = session.getAttribute("isValidUser");
             if (isValidUser != null && (Boolean) isValidUser) {
                 isLoggedIn = true;
                 username = (String) session.getAttribute("username");
+                displayName = (String) session.getAttribute("displayName");
             }
         }
         
         model.addAttribute("isLoggedIn", isLoggedIn);
         model.addAttribute("username", username);
+        model.addAttribute("displayName", displayName);
         return "signup";
     }
 

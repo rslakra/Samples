@@ -1,15 +1,16 @@
 package com.rslakra.springbootsamples.emailservice.controller;
 
 import com.rslakra.springbootsamples.emailservice.domain.user.IdentityDO;
-import com.rslakra.springbootsamples.emailservice.dto.LoggedInUserRequest;
+import com.rslakra.springbootsamples.emailservice.domain.user.UserInfo;
 import com.rslakra.springbootsamples.emailservice.dto.PasswordChangeRequest;
 import com.rslakra.springbootsamples.emailservice.repository.IdentityRepository;
+import com.rslakra.springbootsamples.emailservice.service.UserInfoService;
 import com.rslakra.springbootsamples.emailservice.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,6 +34,9 @@ public class PasswordController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserInfoService userInfoService;
 
     @Autowired
     private IdentityRepository identityRepository;
@@ -82,8 +86,29 @@ public class PasswordController {
         return new PasswordChangeRequest();
     }
 
-    @GetMapping("/user/change-password")
-    public String displayPasswordChange(Model model) {
+    @GetMapping("/change-password")
+    public String displayPasswordChange(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession(false);
+        boolean isLoggedIn = false;
+        String username = null;
+        String displayName = null;
+        
+        if (session != null) {
+            Object isValidUser = session.getAttribute("isValidUser");
+            if (isValidUser != null && (Boolean) isValidUser) {
+                isLoggedIn = true;
+                username = (String) session.getAttribute("username");
+                displayName = (String) session.getAttribute("displayName");
+            }
+        }
+        
+        if (!isLoggedIn) {
+            return "redirect:/login?notLoggedIn";
+        }
+        
+        model.addAttribute("isLoggedIn", isLoggedIn);
+        model.addAttribute("username", username);
+        model.addAttribute("displayName", displayName);
         return "change-password";
     }
 
@@ -94,30 +119,77 @@ public class PasswordController {
      * @param result
      * @return
      */
-    @PostMapping("/user/change-password")
+    @PostMapping("/change-password")
     @Transactional
-    public String handlePasswordChange(@ModelAttribute("passwordChangeForm") @Validated PasswordChangeRequest form,
-                                       BindingResult result) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        LoggedInUserRequest loggedInUserRequest = (LoggedInUserRequest) auth.getPrincipal();
-        IdentityDO user = identityRepository.findById(loggedInUserRequest.getUserObjectId()).orElse(null);
+    public String handlePasswordChange(HttpServletRequest request,
+                                       @ModelAttribute("passwordChangeForm") @Validated PasswordChangeRequest form,
+                                       BindingResult result, Model model) {
+        HttpSession session = request.getSession(false);
+        boolean isLoggedIn = false;
+        String username = null;
+        String displayName = null;
         
-        if (user == null) {
+        if (session != null) {
+            Object isValidUser = session.getAttribute("isValidUser");
+            if (isValidUser != null && (Boolean) isValidUser) {
+                isLoggedIn = true;
+                username = (String) session.getAttribute("username");
+                displayName = (String) session.getAttribute("displayName");
+            }
+        }
+        
+        model.addAttribute("isLoggedIn", isLoggedIn);
+        model.addAttribute("username", username);
+        model.addAttribute("displayName", displayName);
+        
+        if (!isLoggedIn) {
             return "redirect:/login?notLoggedIn";
-        } else if (form.getNewPassword().isEmpty()) {
+        }
+        
+        // Get user from session
+        UserInfo userInfo = (UserInfo) session.getAttribute("user");
+        if (userInfo == null || userInfo.getUserName() == null) {
+            LOGGER.warn("User not found in session");
+            return "redirect:/login?notLoggedIn";
+        }
+        
+        // Get user from database
+        UserInfo dbUserInfo = userInfoService.getUserByName(userInfo.getUserName());
+        if (dbUserInfo == null) {
+            LOGGER.warn("User not found in database: {}", userInfo.getUserName());
+            return "redirect:/login?notLoggedIn";
+        }
+        
+        // Get IdentityDO for password update
+        IdentityDO user = identityRepository.findById(dbUserInfo.getId()).orElse(null);
+        if (user == null) {
+            LOGGER.warn("IdentityDO not found for user: {}", dbUserInfo.getId());
+            return "redirect:/login?notLoggedIn";
+        }
+        
+        // Validate form
+        if (form.getNewPassword() == null || form.getNewPassword().trim().isEmpty()) {
+            result.rejectValue("newPassword", null, "New password is required.");
             return "change-password";
-        } else if (!form.getNewPassword().equals(form.getConfirmPassword())) {
+        }
+        
+        if (!form.getNewPassword().equals(form.getConfirmPassword())) {
             result.rejectValue("confirmPassword", null,
                                "You must enter the same password twice in order to confirm it.");
             LOGGER.info("Confirmation password mismatch.");
             return "change-password";
-        } else if (!passwordEncoder.matches(form.getCurrentPassword(), user.getPassword())) {
+        }
+        
+        if (!passwordEncoder.matches(form.getCurrentPassword(), user.getPassword())) {
             result.rejectValue("currentPassword", null, "Current password is incorrect.");
+            LOGGER.info("Current password mismatch for user: {}", userInfo.getUserName());
             return "change-password";
         }
 
+        // Update password
         String updatedPassword = passwordEncoder.encode(form.getConfirmPassword());
-        userService.updatePassword(updatedPassword, user.getId());
+        userService.updatePassword(user.getId(), updatedPassword);
+        LOGGER.info("Password updated successfully for user: {}", userInfo.getUserName());
 
         return "redirect:/?changeSuccess";
     }

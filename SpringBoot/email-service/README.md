@@ -4,17 +4,23 @@ A Spring Boot email service application with user authentication, password manag
 
 ## Features
 
-- **User Authentication**: Custom authentication with Spring Security and BCrypt password encoding
+- **User Authentication**: Custom session-based authentication with Spring Security and BCrypt password encoding
 - **User Registration**: Signup functionality with input validation
-- **Password Management**: Change password functionality
+- **User Dashboard**: Personalized dashboard page with user information and quick actions
+- **Password Management**: Change password functionality for logged-in users
 - **Email Service**: Send emails using Thymeleaf templates
 - **File Management**: Admin-only file upload/download/delete (requires ADMIN role)
+- **UI Components**: 
+  - Persistent navbar and footer across all pages using Thymeleaf fragments
+  - Responsive design with modern CSS
+  - User-friendly dropdown menus
 - **Security**: 
   - CSRF protection
   - Content Security Policy
   - Secure session management
   - XSS protection (HTML encoding using Apache Commons Text)
   - Input validation (username, email, integer validation)
+  - Session-based authentication (controllers check session validity)
 
 ## Prerequisites
 
@@ -115,10 +121,10 @@ The application will start on **port 8080** by default.
    http://localhost:8080
    ```
 
-2. **You will be redirected to the login page** (Spring Security protection)
-
+2. **Home Page**: Displays features and login/signup options if not logged in
 3. **Login Page**: `http://localhost:8080/login`
-4. **H2 Console**: `http://localhost:8080/h2` (for database management)
+4. **Dashboard**: `http://localhost:8080/dashboard` (requires login)
+5. **H2 Console**: `http://localhost:8080/h2` (for database management)
 
 ### Available Endpoints
 
@@ -128,24 +134,43 @@ The application will start on **port 8080** by default.
 | `/login`                | GET      | Login page                  | Public         |
 | `/signup`               | GET/POST | User registration           | Public         |
 | `/authenticate`         | POST     | User authentication         | Public         |
-| `/home`                 | GET      | Home page                   | Required       |
-| `/user/change-password` | GET/POST | Change password page        | Required       |
+| `/dashboard`            | GET      | User dashboard              | Session-based* |
+| `/change-password`       | GET/POST | Change password page        | Session-based* |
+| `/forgotPassword`       | GET/POST | Forgot password page        | Public         |
 | `/file`                 | GET/POST | File management             | ADMIN only     |
 | `/delete-file`          | GET/POST | Delete file                 | ADMIN only     |
-| `/logout`               | GET      | Logout                      | Required       |
+| `/logout`               | GET      | Logout                      | Session-based* |
 | `/error`                | GET      | Error page                  | Public         |
 | `/h2`                   | GET      | H2 Database Console         | Public         |
 
+\* **Session-based authentication**: These endpoints are public at Spring Security level but require a valid session. Controllers check session and redirect to login if not authenticated.
+
 ### Public Resources (No Authentication Required)
 
+**Static Resources:**
 - `/webjars/**` - WebJars resources
 - `/css/**` - CSS files
 - `/js/**` - JavaScript files
 - `/images/**` - Image files
-- `/signup` - User registration
-- `/forgotPassword**` - Password reset
-- `/reset-password**` - Password reset confirmation
-- `/h2/**` - H2 Database Console (development only)
+
+**Public Pages:**
+- `/` - Home page
+- `/about/**` - About pages
+- `/contact/**` - Contact pages
+- `/error/**` - Error pages
+
+**Authentication Endpoints:**
+- `/login` - Login page
+- `/signup`, `/signup/**` - User registration
+- `/authenticate` - User authentication (POST)
+- `/forgotPassword`, `/forgotPassword/**` - Password reset
+- `/reset-password/**` - Password reset confirmation
+
+**Development Tools:**
+- `/h2/**`, `/h2-console/**` - H2 Database Console (development only)
+- `/swagger-ui.html/**` - Swagger UI (if enabled)
+
+**Note**: `/dashboard` and `/change-password` are public at Spring Security level but require session-based authentication (controllers check session and redirect to login if not authenticated).
 
 ### Testing the Application
 
@@ -253,10 +278,12 @@ The application uses a security configuration in `WebSecurityConfig.java`:
 **Security Features:**
 - **Input Validation**: Uses `SecurityUtils` for username, email, and XSS pattern validation
 - **Output Encoding**: HTML encoding using Apache Commons Text (replaces ESAPI)
-- **Public endpoints**: `/`, `/login`, `/signup`, `/authenticate`, `/h2/**`, static resources
-- **Authentication required**: `/home`, `/user/change-password`, etc.
+- **Session Management**: Session-based authentication with session validation in controllers
+- **Public endpoints**: Organized by category in `PUBLIC_MATCHERS` (static resources, public pages, auth endpoints, dev tools)
+- **Session-protected endpoints**: `/dashboard`, `/change-password` (public at Spring Security level, but controllers check session)
 - **ADMIN role required**: `/file`, `/delete-file`
 - **HTTPS requirement**: Disabled for development (can be enabled for production)
+- **Display Name**: Uses first name for user display (falls back to username if first name not available)
 
 **Security Utilities:**
 - `SecurityUtils.java`: Provides HTML encoding, input validation, and XSS protection
@@ -270,39 +297,56 @@ src/
 ├── main/
 │   ├── java/
 │   │   └── com/rslakra/springbootsamples/emailservice/
-│   │       ├── config/security/     # Security configuration
-│   │       │   ├── WebSecurityConfig.java    # Main security config
-│   │       │   ├── JwtTokenFilter.java        # JWT token filter
-│   │       │   └── JwtAuthenticationEntryPoint.java
-│   │       ├── controller/          # Web controllers
-│   │       │   ├── HomeController.java
-│   │       │   ├── LoginController.java      # Custom authentication
-│   │       │   ├── SignupController.java     # User registration
-│   │       │   ├── PasswordController.java
-│   │       │   └── FileController.java
-│   │       ├── domain/              # JPA entities
+│   │       ├── config/              # Configuration
+│   │       │   ├── security/         # Security configuration
+│   │       │   │   ├── WebSecurityConfig.java    # Main security config
+│   │       │   │   ├── JwtTokenFilter.java        # JWT token filter
+│   │       │   │   └── JwtAuthenticationEntryPoint.java
+│   │       │   └── SCPHelper.java    # Security helper
+│   │       ├── controller/           # Web controllers
+│   │       │   ├── HomeController.java           # Home page & dashboard
+│   │       │   ├── LoginController.java          # Custom authentication
+│   │       │   ├── SignupController.java         # User registration
+│   │       │   ├── PasswordController.java       # Password management
+│   │       │   └── FileController.java           # File management (admin)
+│   │       ├── domain/               # JPA entities
 │   │       │   └── user/
-│   │       │       ├── IdentityDO.java        # User entity
-│   │       │       └── UserInfo.java
-│   │       ├── dto/                 # Data transfer objects
-│   │       ├── repository/          # JPA repositories
-│   │       ├── service/             # Business logic
+│   │       │       ├── IdentityDO.java            # User entity (JPA)
+│   │       │       └── UserInfo.java              # User DTO
+│   │       ├── dto/                  # Data transfer objects
+│   │       │   ├── PasswordChangeRequest.java
+│   │       │   └── UserRequest.java
+│   │       ├── repository/           # JPA repositories
+│   │       │   └── IdentityRepository.java
+│   │       ├── service/              # Business logic
 │   │       │   ├── AuthUserDetailsService.java
 │   │       │   ├── UserService.java
 │   │       │   └── UserInfoService.java
-│   │       └── utils/               # Utility classes
-│   │           ├── SecurityUtils.java        # Security utilities (replaces ESAPI)
-│   │           └── AppUtils.java
+│   │       └── utils/                # Utility classes
+│   │           ├── SecurityUtils.java            # Security utilities (replaces ESAPI)
+│   │           └── AppUtils.java                 # General utilities
 │   └── resources/
-│       ├── application.properties   # Application configuration
-│       ├── logback.xml              # Logging configuration
-│       ├── ESAPI.properties         # (Deprecated - no longer used)
-│       └── templates/               # Thymeleaf templates
-│           ├── index.html
-│           ├── login.html
-│           └── signup.html
+│       ├── application.properties    # Application configuration
+│       ├── logback.xml               # Logging configuration
+│       ├── static/                   # Static resources
+│       │   └── css/
+│       │       ├── navbar-styles.css # Navbar styles
+│       │       └── styles.css        # General styles
+│       └── templates/                # Thymeleaf templates
+│           ├── index.html           # Home page
+│           ├── login.html           # Login page
+│           ├── signup.html          # Signup page
+│           ├── dashboard.html        # User dashboard
+│           ├── change-password.html # Change password page
+│           ├── forgot-password.html # Forgot password page
+│           ├── layout.html          # Base layout template
+│           ├── fragments/            # Reusable fragments
+│           │   ├── navbar.html      # Navigation bar
+│           │   └── footer.html      # Footer
+│           └── email/                # Email templates
+│               └── resetPassword.html
 └── test/
-    └── java/                        # Test classes
+    └── java/                         # Test classes
 ```
 
 ## Troubleshooting
@@ -358,6 +402,22 @@ src/
 - Check application logs for authentication errors
 - Verify `/authenticate` endpoint is accessible (public endpoint)
 - Check that username/email and password are being submitted correctly
+- Verify session is being created after successful login (check logs for session ID)
+
+#### Dashboard Shows Blank Page
+- Check application logs for template rendering errors
+- Verify session attributes are set correctly (check logs for `isValidUser`, `displayName`, etc.)
+- Ensure user is logged in (session contains `isValidUser=true`)
+- Check browser console (F12) for JavaScript errors
+- Verify Thymeleaf template `dashboard.html` exists in `src/main/resources/templates/`
+
+#### Change Password Not Working
+- Verify user is logged in (check session)
+- Ensure current password is correct
+- Check that new password and confirmation match
+- Verify `/change-password` endpoint is accessible
+- Check application logs for password update errors
+- Ensure `UserService.updatePassword()` method is working correctly
 
 #### H2 Console Shows Blank Page
 - **Ensure JavaScript is enabled** in your browser (H2 console requires JavaScript)

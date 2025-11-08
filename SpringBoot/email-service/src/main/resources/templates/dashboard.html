@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Email Service</title>
+    <title>Email Service - Dashboard</title>
     <link th:href="@{/css/navbar-styles.css}" rel="stylesheet" type="text/css"/>
     <link th:href="@{/css/styles.css}" rel="stylesheet" type="text/css"/>
 </head>
 <body class="layout-body">
     <!-- Navigation -->
-    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <nav th:replace="~{fragments/navbar :: navbar}"></nav>
 
     <!-- Main Content -->
     <div class="main-content">
         <!-- Welcome Section -->
         <div class="hero-section">
-            <h1>Welcome, <span th:text="${username != null ? username : 'User'}">User</span>!</h1>
+            <h1>Welcome, <span th:text="${displayName != null ? displayName : 'User'}">User</span>!</h1>
             <p>Manage your email service account</p>
         </div>
 
@@ -24,19 +24,19 @@
             <div class="feature-card">
                 <h3>👤 Profile Settings</h3>
                 <p>Update your account information and preferences.</p>
-                <a th:href="@{/user/change-password}" class="btn btn-primary" style="margin-top: 15px; display: inline-block;">Change Password</a>
+                <a th:href="@{/change-password}" class="btn btn-primary" style="margin-top: 15px; display: inline-block;">Change Password</a>
             </div>
             
             <div class="feature-card">
                 <h3>📧 Email Management</h3>
                 <p>Send, receive, and organize your emails efficiently.</p>
-                <a href="#" class="btn btn-outline" style="margin-top: 15px; display: inline-block;">Manage Emails</a>
+                <p style="margin-top: 15px; color: #666; font-style: italic;">Coming soon...</p>
             </div>
             
             <div class="feature-card">
                 <h3>📊 Account Overview</h3>
                 <p>View your account statistics and activity.</p>
-                <a href="#" class="btn btn-outline" style="margin-top: 15px; display: inline-block;">View Stats</a>
+                <p style="margin-top: 15px; color: #666; font-style: italic;">Coming soon...</p>
             </div>
             
             <div th:if="${isAdmin}" class="feature-card">
@@ -50,7 +50,7 @@
         <div class="cta-section">
             <h2 style="color: #333; margin-bottom: 15px;">Quick Actions</h2>
             <div class="cta-buttons">
-                <a th:href="@{/user/change-password}" class="btn btn-primary">Change Password</a>
+                <a th:href="@{/change-password}" class="btn btn-primary">Change Password</a>
                 <a th:href="@{/}" class="btn btn-outline">Go to Home</a>
                 <a th:href="@{/logout}" class="btn btn-outline">Logout</a>
             </div>
@@ -58,6 +58,6 @@
     </div>
 
     <!-- Footer -->
-    <div th:replace="~{fragments/footer :: footer}"></div>
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
 </body>
 </html>

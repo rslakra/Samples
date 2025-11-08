@@ -84,13 +84,22 @@ html, body {
     min-width: 180px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     border-radius: 5px;
-    margin-top: 5px;
-    padding: 5px 0;
+    padding: 8px 0;
     z-index: 1001;
+    margin-top: 0;
+    /* Create invisible bridge area to prevent gap when moving mouse from parent to menu */
+    padding-top: 5px;
+    margin-top: -5px;
 }
 
+/* Show dropdown on hover of parent */
 .dropdown:hover .dropdown-menu,
 .dropdown.active .dropdown-menu {
+    display: block;
+}
+
+/* Keep dropdown visible when hovering over the menu itself */
+.dropdown-menu:hover {
     display: block;
 }
 

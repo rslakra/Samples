@@ -12,18 +12,19 @@
                     <a th:href="@{/signup}" class="nav-link">Sign Up</a>
                 </li>
                 <li th:if="${isLoggedIn}" class="nav-item dropdown">
-                    <a href="#" class="nav-link">
-                        <span th:text="${username != null ? username : 'Profile'}">Profile</span> ▼
+                    <a href="#" class="nav-link" onclick="return false;">
+                        <span th:text="${displayName != null ? displayName : 'User'}">User</span> ▼
                     </a>
                     <div class="dropdown-menu">
-                        <a th:href="@{/user/change-password}" class="dropdown-item">Settings</a>
+                        <a th:href="@{/change-password}" class="dropdown-item">Settings</a>
                         <div class="dropdown-divider"></div>
                         <a th:href="@{/logout}" class="dropdown-item">Logout</a>
                     </div>
                 </li>
-                <li th:if="${isLoggedIn}" class="nav-item">
+                <!-- <li th:if="${isLoggedIn}" class="nav-item">
                     <a th:href="@{/logout}" class="nav-link btn-primary">Logout</a>
-                </li>
+                </li> -->
+                
             </ul>
         </div>
     </nav>

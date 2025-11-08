@@ -59,6 +59,7 @@ public class LoginController {
         HttpSession session = request.getSession(false);
         boolean isLoggedIn = false;
         String username = null;
+        String displayName = null;
         
         if (session != null) {
             Object isValidUser = session.getAttribute("isValidUser");
@@ -71,10 +72,12 @@ public class LoginController {
                 }
             }
             username = (String) session.getAttribute("username");
+            displayName = (String) session.getAttribute("displayName");
         }
         
         model.addAttribute("isLoggedIn", isLoggedIn);
         model.addAttribute("username", username);
+        model.addAttribute("displayName", displayName);
         return "login";
     }
 
@@ -134,13 +137,31 @@ public class LoginController {
             isAdmin = true;
             homePage = Constants.URL_OWNER_HOME;
         }
+        
+        // Set session attributes
+        LOGGER.info("Setting session attributes for user: {}", username);
+        LOGGER.info("Session ID before setting attributes: {}", session.getId());
         session.setAttribute("user", userInfo);
         session.setAttribute("isValidUser", true);
         session.setAttribute("isAdmin", isAdmin);
         // Encode username for HTML display to prevent XSS
-        session.setAttribute("username", SecurityUtils.encodeForHTML(userInfo.getUserName()));
+        String encodedUsername = SecurityUtils.encodeForHTML(userInfo.getUserName());
+        session.setAttribute("username", encodedUsername);
+        // Set first name for display (use first name if available, otherwise fall back to username)
+        String displayName = userInfo.getFirstName();
+        if (displayName == null || displayName.trim().isEmpty()) {
+            displayName = userInfo.getUserName();
+        }
+        session.setAttribute("displayName", SecurityUtils.encodeForHTML(displayName));
+        
+        // Verify session attributes were set
+        LOGGER.info("Session ID after setting attributes: {}", session.getId());
+        LOGGER.info("Session isValidUser: {}", session.getAttribute("isValidUser"));
+        LOGGER.info("Session username: {}", session.getAttribute("username"));
+        LOGGER.info("Session displayName: {}", session.getAttribute("displayName"));
+        LOGGER.info("Session isAdmin: {}", session.getAttribute("isAdmin"));
 
-        LOGGER.debug("-authenticate(), homePage={}", homePage);
+        LOGGER.info("Redirecting to: {}", homePage);
         return "redirect:" + homePage;
     }
 
