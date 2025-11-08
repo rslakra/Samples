@@ -1,4 +1,4 @@
-package com.rslakra.springbootsamples.emailservice.controller.web;
+package com.rslakra.springbootsamples.emailservice.controller;
 
 import com.rslakra.springbootsamples.emailservice.service.AnalysisService;
 import lombok.RequiredArgsConstructor;

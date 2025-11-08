@@ -19,7 +19,7 @@ import java.util.List;
  * @author Rohtash Lakra
  * @created 8/12/21 3:27 PM
  */
-@Service
+@Service("userDetailsService")
 public class AuthUserDetailsService implements UserDetailsService {
 
     // LOGGER

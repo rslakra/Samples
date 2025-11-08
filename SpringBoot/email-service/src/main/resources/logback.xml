@@ -35,6 +35,8 @@
     <logger name="org.springframework.transaction" level="WARN"/>
     <!-- to debug some marshaling issues, this should be TRACE -->
     <logger name="org.springframework.web.servlet.mvc" level="WARN"/>
+    <!-- Suppress Spring Security warning about AuthenticationProvider and UserDetailsService -->
+    <logger name="org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer" level="ERROR"/>
 
     <!-- thymeleaf -->
     <logger name="org.thymeleaf" level="WARN"/>

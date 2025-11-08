@@ -1,13 +1,11 @@
 package com.rslakra.springbootsamples.emailservice.config.security;
 
-
 import com.rslakra.springbootsamples.emailservice.Constants;
+import com.rslakra.springbootsamples.emailservice.config.SCPHelper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -19,7 +17,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -44,10 +41,6 @@ public class WebSecurityConfig {
 
     private final JwtTokenFilter tokenFilter;
 
-    @Lazy
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     private final SCPHelper scpHelper;
 
     @Qualifier("userDetailsServiceImpl")
@@ -66,10 +59,12 @@ public class WebSecurityConfig {
         "/console/**",
         "/h2/**",
         "/signup",
-        "/signup/user",
+        "/signup/**",
+        "/forgotPassword",
         "/forgotPassword/**",
         "/reset-password/**",
-        "/login"
+        "/login",
+        "/authenticate"
     };
 
     @Bean
@@ -78,18 +73,10 @@ public class WebSecurityConfig {
     }
 
     /**
-     * @return PasswordEncoder bean
+     * @return PasswordEncoder bean (alias for BCryptPasswordEncoder)
      */
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    /**
-     * @return BCryptPasswordEncoder bean
-     */
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -97,7 +84,7 @@ public class WebSecurityConfig {
      * @return AuthenticationProvider bean
      */
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider authenticationProvider(BCryptPasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsServiceImpl);
         authenticationProvider.setPasswordEncoder(passwordEncoder);
@@ -119,18 +106,25 @@ public class WebSecurityConfig {
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // Changed from STATELESS to allow H2 console sessions
             )
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(PUBLIC_MATCHERS).permitAll()
+                .requestMatchers("/swagger-ui.html/**").permitAll()
+                .requestMatchers("/h2/**").permitAll()
+                .anyRequest().authenticated()
+            )
             .exceptionHandling(exception -> exception
                 .authenticationEntryPoint(entryPoint)
                 .accessDeniedHandler((request, response, accessDeniedException) -> {
                     response.sendRedirect("/403");
                 })
             )
-            .formLogin(form -> form
-                .loginPage(Constants.URL_LOGIN)
-                .defaultSuccessUrl(Constants.HOME_PAGE_URL)
-                .failureUrl(Constants.URL_LOGIN + "?error")
-                .permitAll()
-            )
+            // Form login disabled - using custom /authenticate controller instead
+            // .formLogin(form -> form
+            //     .loginPage(Constants.URL_LOGIN)
+            //     .defaultSuccessUrl(Constants.HOME_PAGE_URL)
+            //     .failureUrl(Constants.URL_LOGIN + "?error")
+            //     .permitAll()
+            // )
             .logout(logout -> logout
                 .logoutUrl(Constants.LOGOUT_URL)
                 .logoutRequestMatcher(new AntPathRequestMatcher(Constants.LOGOUT_URL))
@@ -142,12 +136,6 @@ public class WebSecurityConfig {
                 .permitAll()
             )
             .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class)
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers(PUBLIC_MATCHERS).permitAll()
-                .requestMatchers("/swagger-ui.html/**").permitAll()
-                .requestMatchers("/h2/**").permitAll()
-                .anyRequest().authenticated()
-            )
             .headers(headers -> headers
                 .frameOptions(frame -> frame.sameOrigin()) // Allow frames for H2 console
                 .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'"))

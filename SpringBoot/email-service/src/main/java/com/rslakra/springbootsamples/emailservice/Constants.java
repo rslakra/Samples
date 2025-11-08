@@ -11,9 +11,9 @@ public interface Constants {
     String SALT_PRE_STRING = "r";
     String SALT_POST_STRING = "l";
     String LOGIN_PAGE = "loginPage";
-    String HOME_PAGE_URL = "/home";
+    String HOME_PAGE_URL = "/";
     String LOGOUT_URL = "/logout";
-    String URL_OWNER_HOME = "/home";
+    String URL_OWNER_HOME = "/";
     String URL_LOGIN = "/login";
     String URL_USER_HOME = "/dashboard";
     String MSG_BAD_LOGIN_INPUT = "Bad Login Input!";
