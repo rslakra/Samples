@@ -1,25 +1,22 @@
-package com.rslakra.springbootsamples.emailservice.controller.web;
-
+package com.rslakra.springbootsamples.emailservice.controller;
 
 import com.rslakra.appsuite.core.BeanUtils;
 import com.rslakra.springbootsamples.emailservice.Constants;
 import com.rslakra.springbootsamples.emailservice.domain.user.UserInfo;
 import com.rslakra.springbootsamples.emailservice.service.UserInfoService;
-import com.rslakra.springbootsamples.emailservice.utils.AppUtils;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.errors.IntrusionException;
+import com.rslakra.springbootsamples.emailservice.utils.SecurityUtils;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,26 +26,29 @@ import java.util.Map;
  */
 @Controller
 public class LoginController {
-    
+
     // LOGGER
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
-    
+
     @Autowired
     private UserInfoService userService;
-    
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     private String username;
     private String password;
     private String userNameError;
     private String passwordError;
     private Map<String, String> errors;
-    
+
     /**
      * Method to render the login page
      *
      * @param request
      * @return
      */
-    @RequestMapping(value = {"/", "/login"}, method = RequestMethod.GET)
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String viewLoginPage(HttpServletRequest request) {
         //logs debug payload
         if (LOGGER.isDebugEnabled()) {
@@ -66,22 +66,22 @@ public class LoginController {
                 }
             }
         }
-        return Constants.URL_LOGIN;
+        return "login";
     }
-    
+
     /**
      * Method to handle the user authentication request.
      *
      * @param request
      * @param response
      * @param session
-     * @param model
-     * @param redir
+     * @param attrs
      * @return
      */
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public String authenticateUser(HttpServletRequest request, HttpServletResponse response,
-                                   HttpSession session, Model model, RedirectAttributes redir) {
+    public String authenticate(HttpServletRequest request, HttpServletResponse response,
+                               HttpSession session, RedirectAttributes attrs) {
+        LOGGER.debug("+authenticate(%s, %s)", request, attrs);
         username = request.getParameter("user_name").trim();
         password = request.getParameter("password").trim();
         errors = new HashMap<String, String>();
@@ -90,30 +90,33 @@ public class LoginController {
         // if fields are empty or invalid input return error
         if (!validateLoginForm()) {
             if (!userNameError.trim().isEmpty()) {
-                redir.addFlashAttribute("username_error", userNameError);
+                attrs.addFlashAttribute("username_error", userNameError);
             }
             if (!passwordError.trim().isEmpty()) {
-                redir.addFlashAttribute("password_error", passwordError);
+                attrs.addFlashAttribute("password_error", passwordError);
             }
             if (errors.size() > 0) {
-                redir.addFlashAttribute("errors", errors);
+                attrs.addFlashAttribute("errors", errors);
             }
             return "redirect:" + Constants.URL_LOGIN;
         }
-        
+
         UserInfo user = userService.getUserByName(username);
-        
-        // validate the password
+
+        // validate the password using BCrypt (passwords are stored with BCrypt during signup)
         boolean isValidUser = false;
-        if (user != null) {
-            isValidUser = AppUtils.isValidPassword(user.getSalt(), password, user.getPassword());
+        if (user != null && user.getPassword() != null) {
+            // Use BCrypt to match password (passwords are stored with BCrypt during signup)
+            isValidUser = passwordEncoder.matches(password, user.getPassword());
         } else {
-            isValidUser = AppUtils.isValidPassword("this", "wont", "match"); // beware of timing
+            // User doesn't exist or password is null - use dummy password check to prevent timing attacks
+            passwordEncoder.matches("dummy_password", "$2a$10$dummyHashToPreventTimingAttack");
+            isValidUser = false;
         }
-        
+
         // if password doesn't match return error
         if (!isValidUser || user == null) {
-            redir.addFlashAttribute("errorMessage", Constants.MSG_BAD_LOGIN_INPUT);
+            attrs.addFlashAttribute("errorMessage", Constants.MSG_BAD_LOGIN_INPUT);
             return "redirect:" + Constants.URL_LOGIN;
         }
         if (user.getRoleId() == Constants.ADMIN_ROLE_ID) {
@@ -123,14 +126,16 @@ public class LoginController {
         session.setAttribute("user", user);
         session.setAttribute("isValidUser", true);
         session.setAttribute("isAdmin", isAdmin);
-        session.setAttribute("username", ESAPI.encoder().encodeForHTML(user.getUserName()));
-        
+        // Encode username for HTML display to prevent XSS
+        session.setAttribute("username", SecurityUtils.encodeForHTML(user.getUserName()));
+
+        LOGGER.debug("-authenticate(), homePage=%s", homePage);
         return "redirect:" + homePage;
     }
-    
+
     @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public String logoutUser(HttpServletRequest request, HttpServletResponse response,
-                             Model model, RedirectAttributes redir) {
+                             RedirectAttributes redir) {
         HttpSession session = request.getSession();
         response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
         response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
@@ -145,7 +150,7 @@ public class LoginController {
         redir.addFlashAttribute("successMessage", Constants.MSG_LOGOUT_SUCCESS);
         return "redirect:" + Constants.URL_LOGIN;
     }
-    
+
     @RequestMapping(value = "/invalidUser", method = RequestMethod.GET)
     public String logoutInvalidUser(HttpServletRequest request, RedirectAttributes redir) {
         redir.addFlashAttribute("errorMessage", Constants.MSG_INVALID_USER);
@@ -159,12 +164,12 @@ public class LoginController {
         session.invalidate();
         return "redirect:" + Constants.URL_LOGIN;
     }
-    
+
     @RequestMapping(value = "/error", method = RequestMethod.GET)
     public String errorPage(HttpServletRequest request) {
         return Constants.URL_ERROR;
     }
-    
+
     /**
      * Validate for Empty fields
      *
@@ -183,7 +188,7 @@ public class LoginController {
             isValid = false;
             passwordError = Constants.MSG_REQUIRED_PASSWORD;
         }
-        
+
         if (isValid) {
             boolean isValidInput = hasValidFormInputs();
             if (!isValidInput) {
@@ -192,27 +197,27 @@ public class LoginController {
                 errors.put("invalidUserInput", Constants.MSG_BAD_LOGIN_INPUT);
             }
         }
-        
+
         return isValid;
     }
-    
+
     /**
      * Validate for invalid value of text fields (xss attacks)
      *
-     * @return
+     * @return true if input is valid and safe
      */
     private boolean hasValidFormInputs() {
-        boolean isValidInput = true;
-        try {
-            if (username.contains("@") || username.indexOf("@") != -1) {
-                isValidInput = ESAPI.validator().isValidInput("User Name", username, "Email", 30, false);
-            } else {
-                isValidInput = ESAPI.validator().isValidInput("User Name", username, "Username", 30, false);
-            }
-        } catch (IntrusionException e) {
-            isValidInput = false;
+        if (username == null || username.trim().isEmpty()) {
+            return false;
         }
         
-        return isValidInput;
+        // Check if it's an email or username
+        if (username.contains("@")) {
+            // Validate as email
+            return SecurityUtils.isValidEmail(username);
+        } else {
+            // Validate as username
+            return SecurityUtils.isValidUsername(username) && SecurityUtils.isSafeInput(username, 30);
+        }
     }
 }

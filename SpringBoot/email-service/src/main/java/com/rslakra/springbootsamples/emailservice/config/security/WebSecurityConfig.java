@@ -1,25 +1,22 @@
 package com.rslakra.springbootsamples.emailservice.config.security;
 
-
 import com.rslakra.springbootsamples.emailservice.Constants;
+import com.rslakra.springbootsamples.emailservice.config.SCPHelper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HeaderWriterLogoutHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -33,20 +30,16 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
+@EnableMethodSecurity(
     prePostEnabled = true,
     securedEnabled = true,
     jsr250Enabled = true)
 @RequiredArgsConstructor
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig {
 
     private final JwtAuthenticationEntryPoint entryPoint;
 
     private final JwtTokenFilter tokenFilter;
-
-    @Lazy
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     private final SCPHelper scpHelper;
 
@@ -62,53 +55,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         "/",
         "/about/**",
         "/contact/**",
-        "/error/**/*",
+        "/error/**",
         "/console/**",
         "/h2/**",
         "/signup",
-        "/signup/user",
-        "/forgotPassword**",
-        "/reset-password**",
-        "/login"
+        "/signup/**",
+        "/forgotPassword",
+        "/forgotPassword/**",
+        "/reset-password/**",
+        "/login",
+        "/authenticate"
     };
 
-    @Autowired
-    public void configureGlobal(final AuthenticationManagerBuilder auth)
-        throws Exception {
-        auth.userDetailsService(userDetailsServiceImpl)
-            .passwordEncoder(passwordEncoder);
-    }
-
     @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean()
-        throws Exception {
-        return super.authenticationManagerBean();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
     }
 
     /**
-     * @return UserDetailsService bean
-     * @throws Exception
+     * @return PasswordEncoder bean (alias for BCryptPasswordEncoder)
      */
     @Bean
-    @Override
-    public UserDetailsService userDetailsServiceBean() throws Exception {
-        return super.userDetailsServiceBean();
-    }
-
-    /**
-     * @return PasswordEncoder bean
-     */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    /**
-     * @return BCryptPasswordEncoder bean
-     */
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+    public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -116,73 +84,66 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * @return AuthenticationProvider bean
      */
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider authenticationProvider(BCryptPasswordEncoder passwordEncoder) {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsServiceImpl);
         authenticationProvider.setPasswordEncoder(passwordEncoder);
         return authenticationProvider;
     }
 
-    @Override
-    protected void configure(final HttpSecurity httpSecurity)
-        throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-            .csrf()
-            .csrfTokenRepository(CookieCsrfTokenRepository
-                                     .withHttpOnlyFalse()
+            .csrf(csrf -> csrf
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .ignoringRequestMatchers("/h2/**") // Disable CSRF for H2 console
             )
-            .ignoringAntMatchers("/h2/**") // Disable CSRF for H2 console
-            .and()
             // HTTPS requirement disabled for development
             // Uncomment below for production HTTPS requirement
-            // .requiresChannel()
-            // .anyRequest()
-            // .requiresSecure()
-            // .and()
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // Changed from STATELESS to allow H2 console sessions
-            .and()
-            .exceptionHandling()
-            .authenticationEntryPoint(entryPoint)
-            .accessDeniedPage("/403")
-            .and()
-            .formLogin()
-            .loginPage(Constants.URL_LOGIN)
-            .defaultSuccessUrl(Constants.HOME_PAGE_URL)
-            .failureUrl(Constants.URL_LOGIN + "?error")
-            .permitAll()
-            .and()
-            .logout()
-            .logoutUrl(Constants.LOGOUT_URL)
-            .logoutRequestMatcher(new AntPathRequestMatcher(Constants.LOGOUT_URL))
-            .addLogoutHandler(
-                new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(ClearSiteDataHeaderWriter.Directive.ALL)))
-            .clearAuthentication(true)
-            .invalidateHttpSession(true)
-            .logoutSuccessUrl(Constants.URL_LOGIN + "?logout")
-            .permitAll()
-            .and()
+            // .requiresChannel(channel -> channel
+            //     .anyRequest().requiresSecure()
+            // )
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // Changed from STATELESS to allow H2 console sessions
+            )
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(PUBLIC_MATCHERS).permitAll()
+                .requestMatchers("/swagger-ui.html/**").permitAll()
+                .requestMatchers("/h2/**").permitAll()
+                .anyRequest().authenticated()
+            )
+            .exceptionHandling(exception -> exception
+                .authenticationEntryPoint(entryPoint)
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.sendRedirect("/403");
+                })
+            )
+            // Form login disabled - using custom /authenticate controller instead
+            // .formLogin(form -> form
+            //     .loginPage(Constants.URL_LOGIN)
+            //     .defaultSuccessUrl(Constants.HOME_PAGE_URL)
+            //     .failureUrl(Constants.URL_LOGIN + "?error")
+            //     .permitAll()
+            // )
+            .logout(logout -> logout
+                .logoutUrl(Constants.LOGOUT_URL)
+                .logoutRequestMatcher(new AntPathRequestMatcher(Constants.LOGOUT_URL))
+                .addLogoutHandler(
+                    new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(ClearSiteDataHeaderWriter.Directive.ALL)))
+                .clearAuthentication(true)
+                .invalidateHttpSession(true)
+                .logoutSuccessUrl(Constants.URL_LOGIN + "?logout")
+                .permitAll()
+            )
             .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class)
-            .authorizeRequests()
-            .antMatchers(PUBLIC_MATCHERS)
-            .permitAll()
-            .antMatchers("/swagger-ui.html/**")
-            .permitAll()
-            .antMatchers("/h2/**")
-            .permitAll()
-            .anyRequest()
-            .authenticated()
-            .and()
-            .headers()
-            .frameOptions()
-            .sameOrigin() // Allow frames for H2 console
-            .and()
-            .headers()
-            .contentSecurityPolicy("default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'")
-            // HSTS disabled for development (HTTP)
-            // Uncomment below for production HTTPS
-            // .and()
-            // .httpStrictTransportSecurity()
-        ;
+            .headers(headers -> headers
+                .frameOptions(frame -> frame.sameOrigin()) // Allow frames for H2 console
+                .contentSecurityPolicy(csp -> csp.policyDirectives("default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'"))
+                // HSTS disabled for development (HTTP)
+                // Uncomment below for production HTTPS
+                // .httpStrictTransportSecurity(hsts -> hsts...)
+            );
+        
+        return httpSecurity.build();
     }
 }

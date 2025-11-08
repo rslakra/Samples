@@ -1,4 +1,4 @@
-package com.rslakra.springbootsamples.emailservice.controller.web;
+package com.rslakra.springbootsamples.emailservice.controller;
 
 import com.rslakra.springbootsamples.emailservice.service.AnalysisService;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @author Rohtash Lakra

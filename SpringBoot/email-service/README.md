@@ -4,11 +4,17 @@ A Spring Boot email service application with user authentication, password manag
 
 ## Features
 
-- **User Authentication**: JWT-based authentication with Spring Security
+- **User Authentication**: Custom authentication with Spring Security and BCrypt password encoding
+- **User Registration**: Signup functionality with input validation
 - **Password Management**: Change password functionality
 - **Email Service**: Send emails using Thymeleaf templates
 - **File Management**: Admin-only file upload/download/delete (requires ADMIN role)
-- **Security**: CSRF protection, content security policy, and secure session management
+- **Security**: 
+  - CSRF protection
+  - Content Security Policy
+  - Secure session management
+  - XSS protection (HTML encoding using Apache Commons Text)
+  - Input validation (username, email, integer validation)
 
 ## Prerequisites
 
@@ -118,8 +124,9 @@ The application will start on **port 8080** by default.
 
 | Endpoint                | Method   | Description                 | Authentication |
 |-------------------------|----------|-----------------------------|----------------|
-| `/`                     | GET      | Root - redirects to login   | Public         |
+| `/`                     | GET      | Home page                   | Public         |
 | `/login`                | GET      | Login page                  | Public         |
+| `/signup`               | GET/POST | User registration           | Public         |
 | `/authenticate`         | POST     | User authentication         | Public         |
 | `/home`                 | GET      | Home page                   | Required       |
 | `/user/change-password` | GET/POST | Change password page        | Required       |
@@ -216,9 +223,9 @@ VALUES (
 
 **To generate a BCrypt password**, you can use an online tool or add this to a test class:
 
-```java
-BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-String encodedPassword = encoder.encode("password");
+```
+BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+String encodedPassword = passwordEncoder.encode("password");
 System.out.println(encodedPassword);
 ```
 
@@ -230,21 +237,31 @@ Key configuration files:
 - `src/main/resources/application.properties` - Main configuration
 - `src/main/resources/logback.xml` - Logging configuration
 
+**Note**: `ESAPI.properties` is no longer used (ESAPI has been replaced with SecurityUtils)
+
 ### Security Configuration
 
-The application uses a merged security configuration in `WebSecurityConfig.java`:
-- JWT token authentication
-- Form-based login
-- CSRF protection (disabled for H2 console)
-- Content Security Policy (allows inline scripts for H2 console compatibility)
-- Session management (IF_REQUIRED - allows sessions for H2 console)
-- Frame options set to SAMEORIGIN (allows H2 console to load in frames)
+The application uses a security configuration in `WebSecurityConfig.java`:
+- **Custom Authentication**: Custom `/authenticate` endpoint (Spring Security form login disabled)
+- **BCrypt Password Encoding**: Passwords are hashed using BCrypt
+- **JWT Token Filter**: JWT token support (optional)
+- **CSRF Protection**: Enabled with cookie-based token repository (disabled for H2 console)
+- **Content Security Policy**: Allows inline scripts for H2 console compatibility
+- **Session Management**: IF_REQUIRED policy (allows sessions for H2 console)
+- **Frame Options**: SAMEORIGIN (allows H2 console to load in frames)
 
 **Security Features:**
-- Public endpoints: `/`, `/login`, `/signup`, `/h2/**`, static resources
-- Authentication required for: `/home`, `/user/change-password`, etc.
-- ADMIN role required for: `/file`, `/delete-file`
-- HTTPS requirement disabled for development (can be enabled for production)
+- **Input Validation**: Uses `SecurityUtils` for username, email, and XSS pattern validation
+- **Output Encoding**: HTML encoding using Apache Commons Text (replaces ESAPI)
+- **Public endpoints**: `/`, `/login`, `/signup`, `/authenticate`, `/h2/**`, static resources
+- **Authentication required**: `/home`, `/user/change-password`, etc.
+- **ADMIN role required**: `/file`, `/delete-file`
+- **HTTPS requirement**: Disabled for development (can be enabled for production)
+
+**Security Utilities:**
+- `SecurityUtils.java`: Provides HTML encoding, input validation, and XSS protection
+- Replaces ESAPI with simpler, more maintainable Apache Commons Text-based solution
+- See `ESAPI_USAGE.md` for migration details
 
 ## Project Structure
 
@@ -254,16 +271,36 @@ src/
 │   ├── java/
 │   │   └── com/rslakra/springbootsamples/emailservice/
 │   │       ├── config/security/     # Security configuration
-│   │       ├── controller/web/      # Web controllers
+│   │       │   ├── WebSecurityConfig.java    # Main security config
+│   │       │   ├── JwtTokenFilter.java        # JWT token filter
+│   │       │   └── JwtAuthenticationEntryPoint.java
+│   │       ├── controller/          # Web controllers
+│   │       │   ├── HomeController.java
+│   │       │   ├── LoginController.java      # Custom authentication
+│   │       │   ├── SignupController.java     # User registration
+│   │       │   ├── PasswordController.java
+│   │       │   └── FileController.java
 │   │       ├── domain/              # JPA entities
+│   │       │   └── user/
+│   │       │       ├── IdentityDO.java        # User entity
+│   │       │       └── UserInfo.java
 │   │       ├── dto/                 # Data transfer objects
 │   │       ├── repository/          # JPA repositories
 │   │       ├── service/             # Business logic
+│   │       │   ├── AuthUserDetailsService.java
+│   │       │   ├── UserService.java
+│   │       │   └── UserInfoService.java
 │   │       └── utils/               # Utility classes
+│   │           ├── SecurityUtils.java        # Security utilities (replaces ESAPI)
+│   │           └── AppUtils.java
 │   └── resources/
 │       ├── application.properties   # Application configuration
 │       ├── logback.xml              # Logging configuration
+│       ├── ESAPI.properties         # (Deprecated - no longer used)
 │       └── templates/               # Thymeleaf templates
+│           ├── index.html
+│           ├── login.html
+│           └── signup.html
 └── test/
     └── java/                        # Test classes
 ```
@@ -316,9 +353,11 @@ src/
 
 #### Login Not Working
 - Verify user exists in database
-- Check password is BCrypt encoded
+- Check password is BCrypt encoded (passwords are encoded during signup)
 - Ensure user status is `ACTIVE`
 - Check application logs for authentication errors
+- Verify `/authenticate` endpoint is accessible (public endpoint)
+- Check that username/email and password are being submitted correctly
 
 #### H2 Console Shows Blank Page
 - **Ensure JavaScript is enabled** in your browser (H2 console requires JavaScript)
@@ -362,18 +401,39 @@ The JAR file will be created in `target/email-service.jar`
 java -jar target/email-service.jar
 ```
 
+## Dependencies
+
+### Key Dependencies
+- **Spring Boot 3.5.0**: Core framework
+- **Spring Security 6.5.0**: Authentication and authorization
+- **Spring Data JPA**: Database access
+- **Thymeleaf**: Template engine
+- **H2 Database**: Development database
+- **MySQL Connector**: Production database support
+- **Apache Commons Text 1.13.0**: HTML encoding and text utilities (replaces ESAPI)
+- **BCrypt**: Password hashing
+- **Lombok**: Reduces boilerplate code
+
+### Security Dependencies
+- **Spring Security**: Authentication and authorization
+- **Apache Commons Text**: HTML encoding for XSS protection
+- **BCryptPasswordEncoder**: Password hashing
+
+**Note**: ESAPI has been removed and replaced with `SecurityUtils` (using Apache Commons Text). See `ESAPI_USAGE.md` for details.
+
 ## Reference Documentation
 
 For further reference, please consider the following sections:
 
 * [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/2.7.18/maven-plugin/reference/html/)
-* [Create an OCI image](https://docs.spring.io/spring-boot/docs/2.7.18/maven-plugin/reference/html/#build-image)
-* [Spring Security](https://docs.spring.io/spring-boot/docs/2.7.18/reference/htmlsingle/#boot-features-security)
-* [Thymeleaf](https://docs.spring.io/spring-boot/docs/2.7.18/reference/htmlsingle/#boot-features-spring-mvc-template-engines)
-* [Spring Web](https://docs.spring.io/spring-boot/docs/2.7.18/reference/htmlsingle/#boot-features-developing-web-applications)
-* [Spring Data JPA](https://docs.spring.io/spring-boot/docs/2.7.18/reference/htmlsingle/#boot-features-jpa-and-spring-data)
-* [Spring Mail](https://docs.spring.io/spring-boot/docs/2.7.18/reference/htmlsingle/#boot-features-email)
+* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/3.5.0/maven-plugin/reference/html/)
+* [Create an OCI image](https://docs.spring.io/spring-boot/docs/3.5.0/maven-plugin/reference/html/#build-image)
+* [Spring Security](https://docs.spring.io/spring-security/reference/)
+* [Thymeleaf](https://www.thymeleaf.org/documentation.html)
+* [Spring Web](https://docs.spring.io/spring-framework/reference/web/webmvc.html)
+* [Spring Data JPA](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/)
+* [Spring Mail](https://docs.spring.io/spring-framework/reference/integration/email.html)
+* [Apache Commons Text](https://commons.apache.org/proper/commons-text/)
 
 ### Guides
 

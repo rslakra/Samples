@@ -6,14 +6,12 @@ import com.rslakra.springbootsamples.emailservice.domain.order.OrderDetails;
 import com.rslakra.springbootsamples.emailservice.domain.order.OrderedProductInfo;
 import com.rslakra.springbootsamples.emailservice.domain.order.ShippingDetails;
 import com.rslakra.springbootsamples.emailservice.domain.payment.PaymentDetails;
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.errors.IntrusionException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.http.HttpSession;
-import javax.xml.bind.ValidationException;
+import jakarta.servlet.http.HttpSession;
+import jakarta.validation.ValidationException;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.ArrayList;
@@ -71,56 +69,54 @@ public class AppUtils {
     
     /**
      * encode the String to its corresponding HTML
+     * Uses SecurityUtils which replaces ESAPI functionality
      *
      * @param string
      * @return
      */
     public static String encodeForHTML(String string) {
-        return ESAPI.encoder().encodeForHTML(string);
+        return SecurityUtils.encodeForHTML(string);
     }
     
     /**
      * Check for valid Alphanumeric String (e.g Rohtash1)
+     * Uses SecurityUtils which replaces ESAPI functionality
      *
-     * @param context
-     * @param param
-     * @param regExp
-     * @param maxLength
-     * @param allowNull
-     * @return
+     * @param context (kept for compatibility, not used)
+     * @param param the input to validate
+     * @param regExp (kept for compatibility, uses standard validation)
+     * @param maxLength maximum allowed length
+     * @param allowNull whether null values are allowed
+     * @return true if valid
      * @throws ValidationException
      */
     public static boolean isValidInput(String context, String param, String regExp, int maxLength, boolean allowNull)
             throws ValidationException {
-        boolean isValid = true;
-        try {
-            isValid = ESAPI.validator().isValidInput(context, param, regExp, maxLength, allowNull);
-        } catch (IntrusionException e) {
-            isValid = false;
+        if (param == null) {
+            return allowNull;
         }
-        return isValid;
+        // Use SecurityUtils for validation
+        return SecurityUtils.isSafeInput(param, maxLength);
     }
     
     /**
      * Check for valid Integer value
+     * Uses SecurityUtils which replaces ESAPI functionality
      *
-     * @param context
-     * @param param
-     * @param minValue
-     * @param maxValue
-     * @param allowNull
-     * @return
+     * @param context (kept for compatibility, not used)
+     * @param param the integer string to validate
+     * @param minValue minimum allowed value
+     * @param maxValue maximum allowed value
+     * @param allowNull whether null values are allowed
+     * @return true if valid
      * @throws ValidationException
      */
     public static boolean isValidInteger(String context, String param, int minValue, int maxValue, boolean allowNull)
             throws ValidationException {
-        boolean isValid = true;
-        try {
-            isValid = ESAPI.validator().isValidInteger(context, param, minValue, maxValue, allowNull);
-        } catch (IntrusionException e) {
-            isValid = false;
+        if (param == null) {
+            return allowNull;
         }
-        return isValid;
+        return SecurityUtils.isValidInteger(param, minValue, maxValue);
     }
     
     public static boolean isValidPrice(final String value) {
@@ -130,16 +126,13 @@ public class AppUtils {
     
     /**
      * Validate the product's quantity in the order
+     * Uses SecurityUtils which replaces ESAPI functionality
      */
     public static boolean isValidQuantity(String quantity) {
-        boolean isValid = true;
-        /*if(quantity>0 && quantity<=50);*/
-        try {
-            isValid = ESAPI.validator().isValidInteger("Quantity", quantity.trim(), 1, 50, false);
-        } catch (IntrusionException e) {
-            isValid = false;
+        if (quantity == null || quantity.trim().isEmpty()) {
+            return false;
         }
-        return isValid;
+        return SecurityUtils.isValidInteger(quantity.trim(), 1, 50);
     }
     
     /**

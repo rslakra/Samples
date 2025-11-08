@@ -1,4 +1,4 @@
-package com.rslakra.springbootsamples.emailservice.config.security;
+package com.rslakra.springbootsamples.emailservice.config;
 
 import org.springframework.stereotype.Component;
 
@@ -13,3 +13,4 @@ public class SCPHelper {
         return null;
     }
 }
+
