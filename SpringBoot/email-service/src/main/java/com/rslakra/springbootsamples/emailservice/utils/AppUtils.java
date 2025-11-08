@@ -6,6 +6,7 @@ import com.rslakra.springbootsamples.emailservice.domain.order.OrderDetails;
 import com.rslakra.springbootsamples.emailservice.domain.order.OrderedProductInfo;
 import com.rslakra.springbootsamples.emailservice.domain.order.ShippingDetails;
 import com.rslakra.springbootsamples.emailservice.domain.payment.PaymentDetails;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.crypto.Cipher;
@@ -65,6 +66,19 @@ public class AppUtils {
         BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
         raw_password = raw_password + salt;
         return bcrypt.matches(raw_password, db_password);
+    }
+    
+    /**
+     * Get and trim a request parameter value, returning empty string if null.
+     * This is a convenience method to avoid repeating the null check and trim pattern.
+     *
+     * @param request the HttpServletRequest
+     * @param paramName the parameter name
+     * @return the trimmed parameter value, or empty string if null
+     */
+    public static String getParameter(HttpServletRequest request, String paramName) {
+        String value = request.getParameter(paramName);
+        return value != null ? value.trim() : "";
     }
     
     /**

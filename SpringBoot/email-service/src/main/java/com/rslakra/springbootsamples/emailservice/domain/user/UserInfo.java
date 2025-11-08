@@ -1,5 +1,7 @@
 package com.rslakra.springbootsamples.emailservice.domain.user;
 
+import com.rslakra.appsuite.core.BeanUtils;
+import com.rslakra.springbootsamples.emailservice.Constants;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,4 +24,17 @@ public class UserInfo {
     private String email;
     private String phoneNumber;
     private String roleId;
+
+    public boolean isUser() {
+        // Check if user is not admin (assuming non-admin users are regular users)
+        return roleId != null && !roleId.equals(Constants.ADMIN_ROLE_ID);
+    }
+
+    public boolean hasPassword() {
+        return !BeanUtils.isEmpty(password);
+    }
+
+    public boolean isAdmin() {
+        return roleId != null && roleId.equals(Constants.ADMIN_ROLE_ID);
+    }
 }

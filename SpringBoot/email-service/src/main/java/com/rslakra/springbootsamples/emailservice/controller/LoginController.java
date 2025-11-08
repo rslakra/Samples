@@ -4,6 +4,7 @@ import com.rslakra.appsuite.core.BeanUtils;
 import com.rslakra.springbootsamples.emailservice.Constants;
 import com.rslakra.springbootsamples.emailservice.domain.user.UserInfo;
 import com.rslakra.springbootsamples.emailservice.service.UserInfoService;
+import com.rslakra.springbootsamples.emailservice.utils.AppUtils;
 import com.rslakra.springbootsamples.emailservice.utils.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -49,23 +51,30 @@ public class LoginController {
      * @return
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String viewLoginPage(HttpServletRequest request) {
+    public String viewLoginPage(HttpServletRequest request, Model model) {
         //logs debug payload
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("User Controller is executed!");
         }
         HttpSession session = request.getSession(false);
+        boolean isLoggedIn = false;
+        String username = null;
+        
         if (session != null) {
-            if ((Object) session.getAttribute("isValidUser") != null) {
-                if ((Boolean) session.getAttribute("isValidUser") == true) {
-                    if ((Boolean) session.getAttribute("isAdmin") == true) {
-                        return "redirect:" + Constants.URL_OWNER_HOME;
-                    } else {
-                        return "redirect:" + Constants.URL_USER_HOME;
-                    }
+            Object isValidUser = session.getAttribute("isValidUser");
+            if (isValidUser != null && (Boolean) isValidUser) {
+                isLoggedIn = true;
+                if ((Boolean) session.getAttribute("isAdmin") == true) {
+                    return "redirect:" + Constants.URL_OWNER_HOME;
+                } else {
+                    return "redirect:" + Constants.URL_USER_HOME;
                 }
             }
+            username = (String) session.getAttribute("username");
         }
+        
+        model.addAttribute("isLoggedIn", isLoggedIn);
+        model.addAttribute("username", username);
         return "login";
     }
 
@@ -81,12 +90,13 @@ public class LoginController {
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
     public String authenticate(HttpServletRequest request, HttpServletResponse response,
                                HttpSession session, RedirectAttributes attrs) {
-        LOGGER.debug("+authenticate(%s, %s)", request, attrs);
-        username = request.getParameter("user_name").trim();
-        password = request.getParameter("password").trim();
-        errors = new HashMap<String, String>();
+        LOGGER.debug("+authenticate({}, {})", request, attrs);
+        username = AppUtils.getParameter(request, "user_name");
+        password = AppUtils.getParameter(request, "password");
+        errors = new HashMap<>();
         boolean isAdmin = false;
         String homePage = Constants.URL_USER_HOME;
+        
         // if fields are empty or invalid input return error
         if (!validateLoginForm()) {
             if (!userNameError.trim().isEmpty()) {
@@ -101,35 +111,36 @@ public class LoginController {
             return "redirect:" + Constants.URL_LOGIN;
         }
 
-        UserInfo user = userService.getUserByName(username);
+        UserInfo userInfo = userService.getUserByName(username);
+        LOGGER.debug("userInfo={}", userInfo);
 
         // validate the password using BCrypt (passwords are stored with BCrypt during signup)
-        boolean isValidUser = false;
-        if (user != null && user.getPassword() != null) {
-            // Use BCrypt to match password (passwords are stored with BCrypt during signup)
-            isValidUser = passwordEncoder.matches(password, user.getPassword());
-        } else {
-            // User doesn't exist or password is null - use dummy password check to prevent timing attacks
-            passwordEncoder.matches("dummy_password", "$2a$10$dummyHashToPreventTimingAttack");
-            isValidUser = false;
-        }
-
-        // if password doesn't match return error
-        if (!isValidUser || user == null) {
+        if (userInfo == null || !userInfo.hasPassword()) {
+            // User doesn't exist or password is null - throw error
             attrs.addFlashAttribute("errorMessage", Constants.MSG_BAD_LOGIN_INPUT);
             return "redirect:" + Constants.URL_LOGIN;
         }
-        if (user.getRoleId() == Constants.ADMIN_ROLE_ID) {
+
+        // Use BCrypt to match password (passwords are stored with BCrypt during signup)
+        boolean isValidUser = passwordEncoder.matches(password, userInfo.getPassword());
+
+        // if password doesn't match return error
+        if (!isValidUser) {
+            attrs.addFlashAttribute("errorMessage", Constants.MSG_BAD_LOGIN_INPUT);
+            return "redirect:" + Constants.URL_LOGIN;
+        }
+        
+        if (userInfo.getRoleId() == Constants.ADMIN_ROLE_ID) {
             isAdmin = true;
             homePage = Constants.URL_OWNER_HOME;
         }
-        session.setAttribute("user", user);
+        session.setAttribute("user", userInfo);
         session.setAttribute("isValidUser", true);
         session.setAttribute("isAdmin", isAdmin);
         // Encode username for HTML display to prevent XSS
-        session.setAttribute("username", SecurityUtils.encodeForHTML(user.getUserName()));
+        session.setAttribute("username", SecurityUtils.encodeForHTML(userInfo.getUserName()));
 
-        LOGGER.debug("-authenticate(), homePage=%s", homePage);
+        LOGGER.debug("-authenticate(), homePage={}", homePage);
         return "redirect:" + homePage;
     }
 

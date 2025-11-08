@@ -8,12 +8,15 @@ import com.rslakra.springbootsamples.emailservice.dto.UserRequest;
 import com.rslakra.springbootsamples.emailservice.repository.IdentityRepository;
 import com.rslakra.springbootsamples.emailservice.service.UserInfoService;
 import com.rslakra.springbootsamples.emailservice.service.UserService;
+import com.rslakra.springbootsamples.emailservice.utils.AppUtils;
 import com.rslakra.springbootsamples.emailservice.utils.SecurityUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,13 +47,30 @@ public class SignupController {
     /**
      * Display the signup page
      *
+     * @param request
+     * @param model
      * @return
      */
     @GetMapping(value = {"", "/"})
-    public String showSignupPage() {
+    public String showSignupPage(HttpServletRequest request, Model model) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("Signup page requested");
         }
+        
+        HttpSession session = request.getSession(false);
+        boolean isLoggedIn = false;
+        String username = null;
+        
+        if (session != null) {
+            Object isValidUser = session.getAttribute("isValidUser");
+            if (isValidUser != null && (Boolean) isValidUser) {
+                isLoggedIn = true;
+                username = (String) session.getAttribute("username");
+            }
+        }
+        
+        model.addAttribute("isLoggedIn", isLoggedIn);
+        model.addAttribute("username", username);
         return "signup";
     }
 
@@ -63,14 +83,14 @@ public class SignupController {
      */
     @PostMapping(value = {"", "/"})
     public String signupUser(HttpServletRequest request, RedirectAttributes attrs) {
-        LOGGER.debug("+signupUser()");
+        LOGGER.debug("+signupUser({}, {})", request, attrs);
         
-        String userName = request.getParameter("user_name") != null ? request.getParameter("user_name").trim() : "";
-        String email = request.getParameter("email") != null ? request.getParameter("email").trim() : "";
-        String firstName = request.getParameter("first_name") != null ? request.getParameter("first_name").trim() : "";
-        String lastName = request.getParameter("last_name") != null ? request.getParameter("last_name").trim() : "";
-        String password = request.getParameter("password") != null ? request.getParameter("password").trim() : "";
-        String confirmPassword = request.getParameter("confirm_password") != null ? request.getParameter("confirm_password").trim() : "";
+        String userName = AppUtils.getParameter(request, "user_name");
+        String email = AppUtils.getParameter(request, "email");
+        String firstName = AppUtils.getParameter(request, "first_name");
+        String lastName = AppUtils.getParameter(request, "last_name");
+        String password = AppUtils.getParameter(request, "password");
+        String confirmPassword = AppUtils.getParameter(request, "confirm_password");
 
         Map<String, String> errors = new HashMap<>();
         String usernameError = "";

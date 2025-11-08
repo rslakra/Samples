@@ -6,14 +6,58 @@
     box-sizing: border-box;
 }
 
-body {
+/* Body styles - only apply flexbox centering for form pages without navbar */
+body:has(.login-container):not(:has(.navbar)),
+body:has(.signup-container):not(:has(.navbar)),
+body:has(.forgot-password-container):not(:has(.navbar)) {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 20px;
+}
+
+/* Form containers with navbar - center on page */
+body:has(.navbar) {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+body:has(.navbar) .login-container,
+body:has(.navbar) .signup-container,
+body:has(.navbar) .forgot-password-container {
+    margin: 100px auto 50px auto;
+    flex: 1;
+}
+
+/* Fallback for browsers that don't support :has() */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Layout body styles */
+body.layout-body {
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    padding-top: 0;
+}
+
+/* Footer styles */
+.app-footer {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 50px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.app-footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 /* Container Styles */
@@ -169,5 +213,109 @@ body {
 .signup-footer a:hover,
 .forgot-password-footer a:hover {
     text-decoration: underline;
+}
+
+/* Home Page Styles */
+.main-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    margin-top: 70px; /* Add top margin to account for fixed navbar */
+}
+
+.hero-section {
+    text-align: center;
+    padding: 60px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px;
+    margin-bottom: 40px;
+}
+
+.hero-section h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.hero-section p {
+    font-size: 20px;
+    margin-bottom: 30px;
+    opacity: 0.9;
+}
+
+.features-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+}
+
+.feature-card {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.feature-card h3 {
+    color: #667eea;
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+.feature-card p {
+    color: #666;
+    line-height: 1.6;
+}
+
+.cta-section {
+    text-align: center;
+    margin-top: 50px;
+    padding: 40px;
+    background: #f8f9fa;
+    border-radius: 10px;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 12px 30px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: inline-block;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-outline {
+    background: white;
+    color: #667eea;
+    border: 2px solid #667eea;
+}
+
+.btn-outline:hover {
+    background: #667eea;
+    color: white;
 }
 

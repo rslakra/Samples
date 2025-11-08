@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <nav th:fragment="navbar" class="navbar">
+        <div class="nav-container">
+            <a th:href="@{/}" class="nav-brand">Email Service</a>
+            <ul class="nav-menu">
+                <li th:if="${!isLoggedIn}" class="nav-item">
+                    <a th:href="@{/login}" class="nav-link btn-primary">Login</a>
+                </li>
+                <li th:if="${!isLoggedIn}" class="nav-item">
+                    <a th:href="@{/signup}" class="nav-link">Sign Up</a>
+                </li>
+                <li th:if="${isLoggedIn}" class="nav-item dropdown">
+                    <a href="#" class="nav-link">
+                        <span th:text="${username != null ? username : 'Profile'}">Profile</span> ▼
+                    </a>
+                    <div class="dropdown-menu">
+                        <a th:href="@{/user/change-password}" class="dropdown-item">Settings</a>
+                        <div class="dropdown-divider"></div>
+                        <a th:href="@{/logout}" class="dropdown-item">Logout</a>
+                    </div>
+                </li>
+                <li th:if="${isLoggedIn}" class="nav-item">
+                    <a th:href="@{/logout}" class="nav-link btn-primary">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</body>
+</html>
+
