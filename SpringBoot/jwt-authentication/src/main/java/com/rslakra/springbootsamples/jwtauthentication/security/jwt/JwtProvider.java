@@ -4,15 +4,16 @@ import com.rslakra.springbootsamples.jwtauthentication.security.services.UserPri
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 
 /**
@@ -31,6 +32,23 @@ public class JwtProvider {
     private int jwtExpiration;
 
     /**
+     * Get the secret key for signing JWT tokens
+     *
+     * @return SecretKey
+     */
+    private SecretKey getSigningKey() {
+        // Ensure the secret is at least 256 bits (32 bytes) for HS512
+        byte[] keyBytes = jwtSecret.getBytes();
+        if (keyBytes.length < 32) {
+            // Pad or extend the key to meet minimum requirement
+            byte[] paddedKey = new byte[32];
+            System.arraycopy(keyBytes, 0, paddedKey, 0, Math.min(keyBytes.length, 32));
+            return Keys.hmacShaKeyFor(paddedKey);
+        }
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    /**
      * @param jwtExpirationInMinutes
      * @return
      */
@@ -46,10 +64,10 @@ public class JwtProvider {
         UserPrinciple userPrincipal = (UserPrinciple) authentication.getPrincipal();
 
         return Jwts.builder()
-            .setSubject((userPrincipal.getUsername()))
-            .setIssuedAt(new Date())
-            .setExpiration(new Date(getExpiryTime(jwtExpiration)))
-            .signWith(SignatureAlgorithm.HS512, jwtSecret)
+            .subject(userPrincipal.getUsername())
+            .issuedAt(new Date())
+            .expiration(new Date(getExpiryTime(jwtExpiration)))
+            .signWith(getSigningKey())
             .compact();
     }
 
@@ -59,7 +77,10 @@ public class JwtProvider {
      */
     public boolean validateJwtToken(final String authToken) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+            Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(authToken);
             return true;
         } catch (SignatureException ex) {
             LOGGER.error("Invalid JWT signature -> Message: {} ", ex);
@@ -82,8 +103,10 @@ public class JwtProvider {
      */
     public String getPrincipleFromJwtToken(final String jwtToken) {
         return Jwts.parser()
-            .setSigningKey(jwtSecret)
-            .parseClaimsJws(jwtToken)
-            .getBody().getSubject();
+            .verifyWith(getSigningKey())
+            .build()
+            .parseSignedClaims(jwtToken)
+            .getPayload()
+            .getSubject();
     }
 }

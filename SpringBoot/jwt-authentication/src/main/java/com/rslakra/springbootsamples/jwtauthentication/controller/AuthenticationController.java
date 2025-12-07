@@ -3,6 +3,7 @@ package com.rslakra.springbootsamples.jwtauthentication.controller;
 import com.rslakra.springbootsamples.jwtauthentication.payload.request.LoginRequest;
 import com.rslakra.springbootsamples.jwtauthentication.payload.request.SignUpRequest;
 import com.rslakra.springbootsamples.jwtauthentication.payload.response.JwtResponse;
+import com.rslakra.springbootsamples.jwtauthentication.payload.response.MessageResponse;
 import com.rslakra.springbootsamples.jwtauthentication.persistence.model.IdentityDO;
 import com.rslakra.springbootsamples.jwtauthentication.persistence.model.RoleDO;
 import com.rslakra.springbootsamples.jwtauthentication.persistence.model.RoleType;
@@ -26,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -80,15 +81,15 @@ public class AuthenticationController {
      * @return
      */
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
         if (identityRepository.existsByUserName(signUpRequest.getUserName())) {
-            return new ResponseEntity<String>("Fail -> Username is already taken!",
-                                              HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new MessageResponse("Fail -> Username is already taken!"));
         }
 
         if (identityRepository.existsByEmail(signUpRequest.getEmail())) {
-            return new ResponseEntity<String>("Fail -> Email is already in use!",
-                                              HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new MessageResponse("Fail -> Email is already in use!"));
         }
 
         // Creating identity's account
@@ -104,31 +105,31 @@ public class AuthenticationController {
             switch (role) {
                 case "admin":
                     RoleDO adminRole = roleRepository.findByName(RoleType.ADMIN)
-                        .orElseThrow(() -> new RuntimeException("Fail! -> Cause: IdentityDO RoleDO not find."));
+                        .orElseThrow(() -> new RuntimeException("Fail! -> Cause: Role not found."));
                     roles.add(adminRole);
 
                     break;
                 case "manager":
                     RoleDO managerRole = roleRepository.findByName(RoleType.MANAGER)
-                        .orElseThrow(() -> new RuntimeException("Fail! -> Cause: IdentityDO RoleDO not find."));
+                        .orElseThrow(() -> new RuntimeException("Fail! -> Cause: Role not found."));
                     roles.add(managerRole);
 
                     break;
                 case "user":
                     RoleDO userRole = roleRepository.findByName(RoleType.USER)
-                        .orElseThrow(() -> new RuntimeException("Fail! -> Cause: IdentityDO RoleDO not find."));
+                        .orElseThrow(() -> new RuntimeException("Fail! -> Cause: Role not found."));
                     roles.add(userRole);
 
                     break;
                 default:
                     RoleDO guestRole = roleRepository.findByName(RoleType.GUEST)
-                        .orElseThrow(() -> new RuntimeException("Fail! -> Cause: IdentityDO RoleDO not find."));
+                        .orElseThrow(() -> new RuntimeException("Fail! -> Cause: Role not found."));
                     roles.add(guestRole);
             }
         });
 
         identity.setRoles(roles);
         identity = identityRepository.save(identity);
-        return ResponseEntity.ok().body("IdentityDO registered successfully!");
+        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
 }
