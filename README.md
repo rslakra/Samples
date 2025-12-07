@@ -1,8 +1,6 @@
 # Samples
 
-The ```Samples``` project contains various example services.
-
-
+The ```Samples``` project contains various example services demonstrating different technologies and frameworks.
 
 ## Folder Structure/Conventions
 
@@ -10,29 +8,22 @@ The ```Samples``` project contains various example services.
 
 ```
 /
-├── <module>                        # The module service
-├── Python                          # The Python services
-├── Spring                          # The Spring services
-├── SpringBoot                      # The SpringBoot services
-├── README.md                       # Instructions and helpful links
-├── robots.txt                      # tells which URLs the search engine crawlers can access on your site
-├── <module>                        # The module service
-└── /
+├── Python/                    # Python services and applications
+├── Spring/                    # Spring Framework services
+├── SpringBoot/                # Spring Boot services
+├── README.md                  # This file
+└── robots.txt                 # Search engine crawler configuration
 ```
 
-
-
-# Reference
+## Reference
 
 ---
 
-- [Python](./Python/README.md)
+- [Python Services](./Python/README.md)
+- [Spring Services](./Spring/README.md)
 - [Spring Boot Services](./SpringBoot/README.md)
-  - [Spring Boot JSP Service](./SpringBoot/springboot-service-jsp/README.md)
 
-
-
-# Author
+## Author
 
 ---
 
