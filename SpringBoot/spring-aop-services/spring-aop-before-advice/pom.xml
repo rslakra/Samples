@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.18</version>
+        <version>3.5.7</version>
         <!-- lookup parent from a repository -->
         <relativePath/>
     </parent>
@@ -46,17 +46,13 @@
         <appsuite-core.version>0.0.74</appsuite-core.version>
 
         <!-- appsuite-spring -->
-        <appsuite-spring.version>0.0.23</appsuite-spring.version>
+        <appsuite-spring.version>0.0.30</appsuite-spring.version>
 
         <!-- lombok -->
         <lombok.version>1.18.34</lombok.version>
 
         <!-- swagger -->
         <swagger.skip>false</swagger.skip>
-
-        <!-- Logging -->
-        <slf4j-api.version>2.0.17</slf4j-api.version>
-        <slf4j-log4j12.version>2.0.17</slf4j-log4j12.version>
 
         <!-- junit-jupiter-params -->
         <junit-jupiter-params.version>5.10.2</junit-jupiter-params.version>
@@ -78,22 +74,6 @@
             <groupId>com.rslakra.appsuite</groupId>
             <artifactId>appsuite-spring</artifactId>
             <version>${appsuite-spring.version}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j-api.version}</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-log4j12 -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>${slf4j-log4j12.version}</version>
-            <!-- <type>pom</type> -->
-            <!-- <scope>test</scope> -->
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
@@ -122,6 +102,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+        <!-- H2 Database -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- tests -->

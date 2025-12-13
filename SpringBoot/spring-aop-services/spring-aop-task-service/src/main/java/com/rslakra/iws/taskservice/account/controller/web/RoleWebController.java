@@ -1,6 +1,5 @@
 package com.rslakra.iws.taskservice.account.controller.web;
 
-import com.rslakra.appsuite.core.BeanUtils;
 import com.rslakra.appsuite.spring.controller.web.AbstractWebController;
 import com.rslakra.appsuite.spring.filter.Filter;
 import com.rslakra.appsuite.spring.parser.Parser;
@@ -50,7 +49,11 @@ public class RoleWebController extends AbstractWebController<Role, Long> {
     @PostMapping("/save")
     @Override
     public String save(Role role) {
-        role = roleService.update(role);
+        if (role.getId() == null) {
+            role = roleService.create(role);
+        } else {
+            role = roleService.update(role);
+        }
         return "redirect:/roles/list";
     }
 
@@ -107,10 +110,10 @@ public class RoleWebController extends AbstractWebController<Role, Long> {
      */
     @GetMapping(path = {"/create", "/update/{id}"})
     @Override
-    public String editObject(Model model, @PathVariable(name = "id", required = false) Long id) {
+    public String editObject(Model model, @PathVariable(name = "id", required = false) java.util.Optional<Long> id) {
         Role role = null;
-        if (BeanUtils.isNotNull(id)) {
-            role = roleService.getById(id);
+        if (id.isPresent()) {
+            role = roleService.getById(id.get());
         } else {
             role = new Role();
         }

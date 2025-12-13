@@ -77,7 +77,7 @@ public class TodoController extends AbstractRestController<Todo, Long> {
         TodoFilter todoFilter = new TodoFilter(allParams);
         if (todoFilter.hasKeys(TodoFilter.ID, TodoFilter.FIRST_NAME)) {
         } else if (todoFilter.hasKey(TodoFilter.ID)) {
-            todos = Arrays.asList(todoService.getById(todoFilter.getLong(TodoFilter.ID)));
+            todos = Arrays.asList(todoService.getById(todoFilter.getValue(TodoFilter.ID, Long.class)));
         } else {
             todos = todoService.getAll();
         }

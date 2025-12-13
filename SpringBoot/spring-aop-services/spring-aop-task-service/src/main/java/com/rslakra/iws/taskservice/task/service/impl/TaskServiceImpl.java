@@ -5,7 +5,7 @@ import com.rslakra.appsuite.spring.exception.DuplicateRecordException;
 import com.rslakra.appsuite.spring.exception.InvalidRequestException;
 import com.rslakra.appsuite.spring.exception.NoRecordFoundException;
 import com.rslakra.appsuite.spring.filter.Filter;
-import com.rslakra.appsuite.spring.persistence.Operation;
+import com.rslakra.appsuite.spring.persistence.ServiceOperation;
 import com.rslakra.appsuite.spring.service.AbstractServiceImpl;
 import com.rslakra.iws.taskservice.account.persistence.entity.User;
 import com.rslakra.iws.taskservice.account.persistence.repository.UserRepository;
@@ -52,7 +52,7 @@ public class TaskServiceImpl extends AbstractServiceImpl<Task, Long> implements 
      * @return
      */
     @Override
-    public Task validate(Operation operation, Task task) {
+    public Task validate(ServiceOperation operation, Task task) {
         LOGGER.debug("+validate({}, {})", operation, task);
         switch (operation) {
             case CREATE: {
@@ -119,7 +119,7 @@ public class TaskServiceImpl extends AbstractServiceImpl<Task, Long> implements 
     @Override
     public Task create(Task task) {
         LOGGER.debug("+create({})", task);
-        task = validate(Operation.CREATE, task);
+        task = validate(ServiceOperation.CREATE, task);
         task = taskRepository.save(task);
         LOGGER.debug("-create(), task: {}", task);
         return task;
@@ -138,7 +138,7 @@ public class TaskServiceImpl extends AbstractServiceImpl<Task, Long> implements 
             throw new InvalidRequestException("The tasks should provide!");
         }
 
-        tasks.forEach(task -> validate(Operation.CREATE, task));
+        tasks.forEach(task -> validate(ServiceOperation.CREATE, task));
         tasks = taskRepository.saveAll(tasks);
 
         LOGGER.debug("-create(), tasks: {}", tasks);
@@ -198,7 +198,7 @@ public class TaskServiceImpl extends AbstractServiceImpl<Task, Long> implements 
     @Override
     public Task update(Task task) {
         LOGGER.debug("+update({})", task);
-        task = validate(Operation.UPDATE, task);
+        task = validate(ServiceOperation.UPDATE, task);
         task = taskRepository.save(task);
         LOGGER.debug("-update(), task: {}", task);
         return task;
@@ -217,7 +217,7 @@ public class TaskServiceImpl extends AbstractServiceImpl<Task, Long> implements 
             throw new InvalidRequestException("The artists should provide!");
         }
 
-        tasks.forEach(task -> validate(Operation.UPDATE, task));
+        tasks.forEach(task -> validate(ServiceOperation.UPDATE, task));
         tasks = taskRepository.saveAll(tasks);
         LOGGER.debug("-update(), task: {}", tasks);
         return tasks;

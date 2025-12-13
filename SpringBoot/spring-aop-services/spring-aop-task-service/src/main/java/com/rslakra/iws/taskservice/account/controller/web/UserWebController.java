@@ -53,7 +53,11 @@ public class UserWebController extends AbstractWebController<User, Long> {
     @PostMapping("/save")
     @Override
     public String save(User user) {
-        user = userService.create(user);
+        if (user.getId() == null) {
+            user = userService.create(user);
+        } else {
+            user = userService.update(user);
+        }
         return "redirect:/users/list";
     }
 
@@ -106,20 +110,11 @@ public class UserWebController extends AbstractWebController<User, Long> {
 
     /**
      * @param model
-     * @param aLong
-     * @return
-     */
-    @Override
-    public String editObject(Model model, Long aLong) {
-        return null;
-    }
-
-    /**
-     * @param model
      * @param userId
      * @return
      */
     @GetMapping(path = {"/create", "/update/{userId}"})
+    @Override
     public String editObject(Model model, @PathVariable(name = "userId", required = false) Optional<Long> userId) {
         User user = null;
         if (userId.isPresent()) {

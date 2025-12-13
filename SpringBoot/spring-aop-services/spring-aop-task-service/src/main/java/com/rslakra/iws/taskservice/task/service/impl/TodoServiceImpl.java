@@ -5,7 +5,7 @@ import com.rslakra.appsuite.spring.exception.DuplicateRecordException;
 import com.rslakra.appsuite.spring.exception.InvalidRequestException;
 import com.rslakra.appsuite.spring.exception.NoRecordFoundException;
 import com.rslakra.appsuite.spring.filter.Filter;
-import com.rslakra.appsuite.spring.persistence.Operation;
+import com.rslakra.appsuite.spring.persistence.ServiceOperation;
 import com.rslakra.appsuite.spring.service.AbstractServiceImpl;
 import com.rslakra.iws.taskservice.account.persistence.entity.User;
 import com.rslakra.iws.taskservice.account.persistence.repository.UserRepository;
@@ -52,7 +52,7 @@ public class TodoServiceImpl extends AbstractServiceImpl<Todo, Long> implements 
      * @return
      */
     @Override
-    public Todo validate(Operation operation, Todo todo) {
+    public Todo validate(ServiceOperation operation, Todo todo) {
         LOGGER.debug("+validate({}, {})", operation, todo);
         switch (operation) {
             case CREATE: {
@@ -109,7 +109,7 @@ public class TodoServiceImpl extends AbstractServiceImpl<Todo, Long> implements 
     @Override
     public Todo create(Todo todo) {
         LOGGER.debug("+create({})", todo);
-        todo = validate(Operation.CREATE, todo);
+        todo = validate(ServiceOperation.CREATE, todo);
         todo = todoRepository.save(todo);
         LOGGER.debug("-create(), todo: {}", todo);
         return todo;
@@ -128,7 +128,7 @@ public class TodoServiceImpl extends AbstractServiceImpl<Todo, Long> implements 
             throw new InvalidRequestException("The todo should provide!");
         }
 
-        todos.forEach(todo -> validate(Operation.CREATE, todo));
+        todos.forEach(todo -> validate(ServiceOperation.CREATE, todo));
         todos = todoRepository.saveAll(todos);
 
         LOGGER.debug("-create(), todos: {}", todos);
@@ -188,7 +188,7 @@ public class TodoServiceImpl extends AbstractServiceImpl<Todo, Long> implements 
     @Override
     public Todo update(Todo todo) {
         LOGGER.debug("+update({})", todo);
-        todo = validate(Operation.UPDATE, todo);
+        todo = validate(ServiceOperation.UPDATE, todo);
         todo = todoRepository.save(todo);
         LOGGER.debug("-update(), todo: {}", todo);
         return todo;
@@ -207,7 +207,7 @@ public class TodoServiceImpl extends AbstractServiceImpl<Todo, Long> implements 
             throw new InvalidRequestException("The todos should provide!");
         }
 
-        todos.forEach(todo -> validate(Operation.UPDATE, todo));
+        todos.forEach(todo -> validate(ServiceOperation.UPDATE, todo));
         todos = todoRepository.saveAll(todos);
 
         LOGGER.debug("-update(), todos: {}", todos);

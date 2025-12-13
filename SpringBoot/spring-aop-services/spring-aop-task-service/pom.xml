@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.18</version>
+        <version>3.5.7</version>
         <!-- lookup parent from a repository -->
         <relativePath/>
     </parent>
@@ -43,16 +43,22 @@
         <checkstyle.threshold>0</checkstyle.threshold>
 
         <!-- appsuite-core -->
-        <appsuite-core.version>0.0.74</appsuite-core.version>
+        <appsuite-core.version>0.0.75</appsuite-core.version>
 
         <!-- appsuite-spring -->
-        <appsuite-spring.version>0.0.23</appsuite-spring.version>
+        <appsuite-spring.version>0.0.30</appsuite-spring.version>
 
         <!-- lombok -->
         <lombok.version>1.18.34</lombok.version>
 
         <!-- swagger -->
         <swagger.skip>false</swagger.skip>
+
+        <!-- liquibase -->
+        <liquibase.version>4.27.0</liquibase.version>
+
+        <!-- mysql -->
+        <mysql.version>9.1.0</mysql.version>
 
         <!-- junit-jupiter-params -->
         <junit-jupiter-params.version>5.10.2</junit-jupiter-params.version>
@@ -92,6 +98,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Thymeleaf template engine -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 
         <dependency>

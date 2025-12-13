@@ -11,9 +11,9 @@ import java.util.List;
 @Controller
 public class EmployeeController {
 
-    @RequestMapping(value = "/user/getEmployeesList", produces = "application/json")
+    @RequestMapping(value = "/user/getEmployees", produces = "application/json")
     @ResponseBody
-    public List<Employee> getEmployeesList() {
+    public List<Employee> getEmployees() {
         List<Employee> employees = new ArrayList<>();
         Employee emp = new Employee();
         emp.setEmpId("emp1");

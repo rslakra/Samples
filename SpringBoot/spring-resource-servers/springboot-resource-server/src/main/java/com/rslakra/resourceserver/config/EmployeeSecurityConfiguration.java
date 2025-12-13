@@ -1,42 +1,54 @@
 package com.rslakra.resourceserver.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class EmployeeSecurityConfiguration extends WebSecurityConfigurerAdapter {
-    
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/resources/**");
+public class EmployeeSecurityConfiguration {
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers("/resources/**");
     }
-    
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/")
-                .permitAll()
-                .antMatchers("/user/getEmployeesList")
-                .hasAnyRole("ADMIN").anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .permitAll()
-                .and()
-                .logout().permitAll();
-        
-        http.csrf().disable();
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/").permitAll()
+                .requestMatchers("/user/getEmployees").hasRole("ADMIN")
+                .anyRequest().authenticated()
+            )
+            .formLogin(form -> form.permitAll())
+            .logout(logout -> logout.permitAll())
+            .csrf(csrf -> csrf.disable());
+
+        return http.build();
     }
-    
-    @Override
-    public void configure(AuthenticationManagerBuilder authenticationMgr) throws Exception {
-        authenticationMgr.inMemoryAuthentication()
-                .withUser("admin")
-                .password("admin")
-                .authorities("ROLE_ADMIN");
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        UserDetails admin = User.builder()
+            .username("admin")
+            .password(passwordEncoder().encode("admin"))
+            .roles("ADMIN")
+            .build();
+        return new InMemoryUserDetailsManager(admin);
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

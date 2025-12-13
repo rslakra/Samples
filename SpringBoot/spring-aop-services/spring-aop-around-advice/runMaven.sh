@@ -25,7 +25,8 @@ echo "${JAVA_HOME}"
 echo
 SNAPSHOT_VERSION=$(buildVersion SNAPSHOT)
 RELEASE_VERSION=$(buildVersion)
-#java -jar target/account-service-$RELEASE_VERSION.jar
+#java -jar target/spring-aop-around-advice-$RELEASE_VERSION.jar
 #mvn clean package -DskipTests
-mvn clean spring-boot:run -Drevision=$RELEASE_VERSION
+mvn clean spring-boot:run -Drevision=$SNAPSHOT_VERSION
+# mvn spring-boot:run -Drevision=$RELEASE_VERSION
 echo
