@@ -27,7 +27,7 @@ public class HomeController {
         response.put("endpoints", Map.of(
             "register", "/api/v1/auth/register",
             "login", "/api/v1/auth/login",
-            "h2-console", "/h2",
+            "h2", "/h2",
             "swagger-ui", "/swagger.html"
         ));
         return ResponseEntity.ok(response);

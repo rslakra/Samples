@@ -61,7 +61,7 @@ public class WebSecurityConfig {
         "/", "/about/**", "/contact/**", "/error/**",
         
         // Development tools - H2 console, Swagger
-        "/h2/**", "/h2-console/**", "/console/**", "/swagger-ui.html/**",
+        "/h2/**", "/h2/**", "/console/**", "/swagger-ui.html/**",
         
         // Authentication endpoints - login, signup, password reset
         // Controllers handle session validation for these

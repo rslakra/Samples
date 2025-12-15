@@ -29,7 +29,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         // Skip JWT filter for H2 console
         String path = httpServletRequest.getRequestURI();
-        if (path != null && (path.startsWith("/h2") || path.startsWith("/h2-console"))) {
+        if (path != null && (path.startsWith("/h2") || path.startsWith("/h2"))) {
             filterChain.doFilter(httpServletRequest, httpServletResponse);
             return;
         }

@@ -167,7 +167,7 @@ The application will start on **port 8080** by default.
 - `/reset-password/**` - Password reset confirmation
 
 **Development Tools:**
-- `/h2/**`, `/h2-console/**` - H2 Database Console (development only)
+- `/h2/**`, `/h2/**` - H2 Database Console (development only)
 - `/swagger-ui.html/**` - Swagger UI (if enabled)
 
 **Note**: `/dashboard` and `/change-password` are public at Spring Security level but require session-based authentication (controllers check session and redirect to login if not authenticated).
@@ -422,7 +422,7 @@ src/
 #### H2 Console Shows Blank Page
 - **Ensure JavaScript is enabled** in your browser (H2 console requires JavaScript)
 - Check browser console (F12) for JavaScript errors
-- Verify you're accessing `http://localhost:8080/h2` (not `/h2-console`)
+- Verify you're accessing `http://localhost:8080/h2` (not `/h2`)
 - The page should automatically redirect to `login.jsp` - if it doesn't, check browser console
 - Try clearing browser cache and cookies
 - Try a different browser (Chrome, Firefox, Safari)
