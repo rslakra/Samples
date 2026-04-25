@@ -1,4 +1,4 @@
-name: WebApp - Flask WebApp CI
+name: Python - Flask WebApp CI
 
 on:
   push:

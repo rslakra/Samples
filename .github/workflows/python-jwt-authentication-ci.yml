@@ -1,4 +1,4 @@
-name: Authentication - JWT Authentication CI
+name: Python - JWT Authentication CI
 
 on:
   push:

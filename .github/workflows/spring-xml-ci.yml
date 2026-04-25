@@ -1,4 +1,4 @@
-name: Spring - spring-xml CI
+name: Spring - SpringXml CI
 
 on:
   push:

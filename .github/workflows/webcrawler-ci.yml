@@ -1,4 +1,4 @@
-name: WebApp - WebCrawler CI
+name: Python - WebCrawler CI
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: Spring - spring-core CI
+name: Spring - SpringCore CI
 
 on:
   push:

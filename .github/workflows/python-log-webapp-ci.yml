@@ -1,4 +1,4 @@
-name: WebApp - LogWebApp CI
+name: Python - LogWebApp CI
 
 on:
   push:

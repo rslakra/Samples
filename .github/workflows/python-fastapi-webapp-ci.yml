@@ -1,4 +1,4 @@
-name: WebApp - FastAPI WebApp CI
+name: Python - FastAPI WebApp CI
 
 on:
   push:

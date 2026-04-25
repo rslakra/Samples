@@ -1,4 +1,4 @@
-name: Spring - spring-annotation CI
+name: Spring - SpringAnnotation CI
 
 on:
   push:

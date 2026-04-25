@@ -1,4 +1,4 @@
-name: WebApp - WebApp CI
+name: Python - WebApp CI
 
 on:
   push:
