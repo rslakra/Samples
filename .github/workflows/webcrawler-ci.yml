@@ -1,4 +1,4 @@
-name: Samples WebApp - WebCrawler CI
+name: WebApp - WebCrawler CI
 
 on:
   push:

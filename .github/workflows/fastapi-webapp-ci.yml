@@ -1,4 +1,4 @@
-name: Samples WebApp - FastAPI WebApp CI
+name: WebApp - FastAPI WebApp CI
 
 on:
   push:

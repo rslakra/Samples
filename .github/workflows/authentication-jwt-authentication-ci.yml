@@ -1,4 +1,4 @@
-name: Samples Authentication - JWT Authentication CI
+name: Authentication - JWT Authentication CI
 
 on:
   push:

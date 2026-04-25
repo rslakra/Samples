@@ -1,4 +1,4 @@
-name: Samples WebApp - LogParser WebApp CI
+name: WebApp - LogParser WebApp CI
 
 on:
   push:

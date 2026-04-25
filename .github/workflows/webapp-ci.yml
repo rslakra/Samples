@@ -1,4 +1,4 @@
-name: Samples WebApp - WebApp CI
+name: WebApp - WebApp CI
 
 on:
   push:

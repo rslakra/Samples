@@ -1,4 +1,4 @@
-name: Samples WebApp - Flask WebApp CI
+name: WebApp - Flask WebApp CI
 
 on:
   push:
