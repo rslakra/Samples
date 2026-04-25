@@ -1,0 +1,1 @@
+# Optional: cx_Oracle for runtime DB scripts (not required for compile-only CI smoke tests).

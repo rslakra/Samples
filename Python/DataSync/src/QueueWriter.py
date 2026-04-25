@@ -37,7 +37,10 @@ config = {
 }
 # print(config)
 
-jsonParameters = '{"id":1, "jobType":'jobType', "entityId":'entityId', "createdOn":'createdOn', "syncStatus":'PENDING'}'
+jsonParameters = (
+    '{"id":1, "jobType":"jobType", "entityId":"entityId", '
+    '"createdOn":"createdOn", "syncStatus":"PENDING"}'
+)
 # print(jsonParameters)
 
 dateStr = "to_date(':2', 'DD-MM-YYYY HH24:MI:SS')"
