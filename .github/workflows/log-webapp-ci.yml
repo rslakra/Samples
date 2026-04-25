@@ -3,17 +3,17 @@ name: Samples WebApp - LogWebApp CI
 on:
   push:
     paths:
-      - "Samples/Python/LogWebApp/**"
-      - ".github/workflows/samples-log-webapp-ci.yml"
+      - "Python/LogWebApp/**"
+      - ".github/workflows/log-webapp-ci.yml"
   pull_request:
     paths:
-      - "Samples/Python/LogWebApp/**"
-      - ".github/workflows/samples-log-webapp-ci.yml"
+      - "Python/LogWebApp/**"
+      - ".github/workflows/log-webapp-ci.yml"
   workflow_dispatch:
 
 defaults:
   run:
-    working-directory: Samples/Python/LogWebApp
+    working-directory: Python/LogWebApp
 
 jobs:
   build-and-test:
@@ -27,7 +27,7 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-          cache-dependency-path: Samples/Python/LogWebApp/requirements.txt
+          cache-dependency-path: Python/LogWebApp/requirements.txt
 
       - name: Install dependencies
         run: |

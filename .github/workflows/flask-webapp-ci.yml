@@ -3,17 +3,17 @@ name: Samples WebApp - Flask WebApp CI
 on:
   push:
     paths:
-      - "Samples/Python/FlaskWebApp/**"
-      - ".github/workflows/samples-flask-webapp-ci.yml"
+      - "Python/FlaskWebApp/**"
+      - ".github/workflows/flask-webapp-ci.yml"
   pull_request:
     paths:
-      - "Samples/Python/FlaskWebApp/**"
-      - ".github/workflows/samples-flask-webapp-ci.yml"
+      - "Python/FlaskWebApp/**"
+      - ".github/workflows/flask-webapp-ci.yml"
   workflow_dispatch:
 
 defaults:
   run:
-    working-directory: Samples/Python/FlaskWebApp
+    working-directory: Python/FlaskWebApp
 
 jobs:
   build-and-test:
@@ -27,7 +27,7 @@ jobs:
         with:
           python-version: "3.12"
           cache: pip
-          cache-dependency-path: Samples/Python/FlaskWebApp/requirements.txt
+          cache-dependency-path: Python/FlaskWebApp/requirements.txt
 
       - name: Install dependencies
         run: |
