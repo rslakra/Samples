@@ -50,6 +50,8 @@ dateString = "to_date(':2', 'DD-MM-YYYY HH24:MI:SS')"
 
 # inserts the records
 def createJWTToken(data):
+    """Placeholder implementation (Oracle/JWT wiring was commented out)."""
+    pass
     # construct an insert statement that add a new row to the billing_headers table
     # try:
     #     host = f"'{config[DB_HOST]}:{config[DB_PORT]}/{config[DB_NAME]}'"

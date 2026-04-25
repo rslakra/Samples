@@ -3,8 +3,8 @@ This repository contains the python project.
 
 
 ```
-Sample/
-|-- code/
+jwt-authentication/
+|-- src/
 |   |-- __init__.py
 |   |-- main.py
 |

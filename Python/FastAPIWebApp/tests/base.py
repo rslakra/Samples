@@ -35,13 +35,17 @@ class AbstractTestCase(unittest.TestCase):
     def setUpClass(cls):
         # set app at class level
         cls.app = app
-        # update app's config enableTesting=True
-        cls.app.config.update({
-            "enableTesting": True
-        })
+        if hasattr(app, "config") and hasattr(app.config, "update"):
+            cls.app.config.update({"enableTesting": True})
+        else:
+            cls.app.state.enableTesting = True
 
-        # init client from app's client
-        cls.client = app.test_client()
+        if hasattr(app, "test_client"):
+            cls.client = app.test_client()
+        else:
+            from fastapi.testclient import TestClient
+
+            cls.client = TestClient(app)
 
         # load json files
         with open('tests/data/app-configs.json', 'r') as app_config_file:

@@ -13,10 +13,11 @@ app = FastAPI(
     docs_url="/docs",
 )
 
-# Include API Routers
-app.include_router(api_router)
-
 
 @app.get("/")
 def root():
     return {"Hello": "World"}
+
+
+# Include API Routers (after root so `/` is registered reliably for tests and runtime)
+app.include_router(api_router)

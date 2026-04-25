@@ -1,9 +1,11 @@
 #
 # Author: Rohtash Lakra
 #
-from flask import current_app
 from unittest import TestCase
-from webapp import WebApp
+
+from fastapi.testclient import TestClient
+
+from tests import app
 
 
 class WebAppTest(TestCase):
@@ -12,10 +14,7 @@ class WebAppTest(TestCase):
         """The setUp() method of the TestCase class is automatically invoked before each test, so it's an ideal place
         to insert common logic that applies to all the tests in the class"""
         print("+setUp()")
-        self.webApp = WebApp()
-        self.app = self.webApp.create_app(test_mode=True)
-        self.app_context = self.app.app_context()
-        self.app_context.push()
+        self.client = TestClient(app)
         print("-setUp()")
         print()
 
@@ -23,18 +22,17 @@ class WebAppTest(TestCase):
         """The tearDown() method of the TestCase class is automatically invoked after each test, so it's an ideal place
         to insert common logic that applies to all the tests in the class"""
         print("+tearDown()")
-        self.app_context.pop()
-        self.webApp = None
-        self.app = None
-        self.app_context = None
+        self.client = None
         print("-tearDown()")
         print()
 
     def test_webapp(self):
         """Tests the WebApp object"""
         print("+test_webapp()")
-        assert self.app is not None
-        assert current_app == self.app
+        response = self.client.get("/openapi.json")
+
         # valid object and expected results
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("openapi", response.json())
         print("-test_webapp()")
         print()
