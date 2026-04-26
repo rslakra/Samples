@@ -1,19 +1,19 @@
-name: SpringBoot - SpringResourceServers CI
+name: Samples - Spring Modules CI
 
 env:
-  RESOURCE_SERVERS_ROOT: SpringBoot/spring-resource-servers
+  SPRING_ROOT: Spring
   JAVA_VERSION: "21"
   DISTRIBUTION: "temurin"
 
 on:
   push:
     paths:
-      - &resource-servers-glob SpringBoot/spring-resource-servers/**
-      - ".github/workflows/spring-resource-servers-ci.yml"
+      - "Spring/**"
+      - ".github/workflows/samples-spring-ci.yml"
   pull_request:
     paths:
-      - *resource-servers-glob
-      - ".github/workflows/spring-resource-servers-ci.yml"
+      - "Spring/**"
+      - ".github/workflows/samples-spring-ci.yml"
   workflow_dispatch:
 
 jobs:
@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        module: [springboot-resource-server, springboot-resource-server-access]
+        module: [spring-annotation, spring-core, spring-java, spring-xml]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,8 +34,8 @@ jobs:
           distribution: ${{ env.DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
           cache: maven
-          cache-dependency-path: ${{ env.RESOURCE_SERVERS_ROOT }}/${{ matrix.module }}/pom.xml
+          cache-dependency-path: ${{ env.SPRING_ROOT }}/${{ matrix.module }}/pom.xml
 
       - name: Build and run unit tests
-        working-directory: ${{ env.RESOURCE_SERVERS_ROOT }}/${{ matrix.module }}
+        working-directory: ${{ env.SPRING_ROOT }}/${{ matrix.module }}
         run: mvn -B -ntp test
