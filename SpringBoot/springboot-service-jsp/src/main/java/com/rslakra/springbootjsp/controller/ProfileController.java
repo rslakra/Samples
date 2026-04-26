@@ -25,4 +25,3 @@ public class ProfileController {
         return new RedirectView("/", true);
     }
 }
-
