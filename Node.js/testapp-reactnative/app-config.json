@@ -1,0 +1,48 @@
+{
+    "name": "React Native Test App",
+    "description": "Mobile application for testing Node.js API endpoints. Features include health check, system info, echo endpoint testing, and parameter testing with a beautiful modern UI.",
+    "runtimeEnvironment": "react-native",
+    "icon": "🚀",
+    "category": "test",
+    "version": "1.0.0",
+    "backend": {
+        "defaultUrl": "http://localhost:4000",
+        "androidEmulatorUrl": "http://10.0.2.2:4000",
+        "note": "Change defaultUrl based on your platform: localhost (iOS), 10.0.2.2 (Android), or YOUR_IP (Physical Device)",
+        "endpoints": [
+            {
+                "path": "/api",
+                "method": "GET",
+                "description": "Application info and available endpoints"
+            },
+            {
+                "path": "/health",
+                "method": "GET",
+                "description": "Health check endpoint"
+            },
+            {
+                "path": "/info",
+                "method": "GET",
+                "description": "System information"
+            },
+            {
+                "path": "/test/:message",
+                "method": "GET",
+                "description": "Test endpoint with message parameter"
+            },
+            {
+                "path": "/echo",
+                "method": "POST",
+                "description": "Echo JSON data"
+            }
+        ]
+    },
+    "features": [
+        "Real-time API monitoring",
+        "Auto-refresh capability",
+        "Interactive endpoint testing",
+        "Modern UI with gradient design",
+        "Pull to refresh",
+        "Native mobile navigation"
+    ]
+}
