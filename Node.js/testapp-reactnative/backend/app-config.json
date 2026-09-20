@@ -1,0 +1,42 @@
+{
+    "name": "VDI Node.js Test App",
+    "description": "Simple Express.js test application with health check, system info, echo, and test endpoints. Features a web dashboard at /index.html with real-time API monitoring.",
+    "runtimeEnvironment": "nodejs",
+    "icon": "🚀",
+    "category": "test",
+    "resources": {
+        "requests": {
+            "memory": "256Mi",
+            "cpu": "250m",
+            "ephemeral-storage": "500Mi"
+        },
+        "limits": {
+            "memory": "512Mi",
+            "cpu": "500m",
+            "ephemeral-storage": "1Gi"
+        }
+    },
+    "env": [
+        {
+            "name": "NODE_ENV",
+            "value": "production"
+        },
+        {
+            "name": "PORT",
+            "value": "4000"
+        },
+        {
+            "name": "HOST",
+            "value": "0.0.0.0"
+        }
+    ],
+    "ports": [
+        {
+            "name": "http",
+            "port": 4000,
+            "protocol": "TCP"
+        }
+    ],
+    "volumes": [],
+    "volumeMounts": []
+}
