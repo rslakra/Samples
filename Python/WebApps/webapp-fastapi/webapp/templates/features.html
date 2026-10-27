@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Features - VDI POC{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Features</h1>
+        <p class="lead">Explore the powerful capabilities of our VDI solution</p>
+    </div>
+</div>
+
+<section class="section">
+    <div class="container">
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-icon-large">🌐</div>
+                    <h3>Browser-Based VDI</h3>
+                </div>
+                <p>
+                    Access virtual desktops directly from your web browser. No additional software
+                    installation required. Works seamlessly across all modern browsers.
+                </p>
+                <ul class="feature-details">
+                    <li>Chrome headless integration</li>
+                    <li>WebRTC support</li>
+                    <li>Cross-platform compatibility</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-icon-large">🔐</div>
+                    <h3>Advanced Security</h3>
+                </div>
+                <p>
+                    Enterprise-grade security features protect your data and connections.
+                    SSL/TLS encryption, certificate management, and secure proxy capabilities.
+                </p>
+                <ul class="feature-details">
+                    <li>MITM proxy with SSL inspection</li>
+                    <li>Certificate authority management</li>
+                    <li>Encrypted data transmission</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-icon-large">📈</div>
+                    <h3>Performance Monitoring</h3>
+                </div>
+                <p>
+                    Real-time monitoring and analytics help you track system performance,
+                    user sessions, and resource utilization.
+                </p>
+                <ul class="feature-details">
+                    <li>Live performance metrics</li>
+                    <li>Session tracking</li>
+                    <li>Resource usage analytics</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-icon-large">🐳</div>
+                    <h3>Container-Based</h3>
+                </div>
+                <p>
+                    Built on Docker for easy deployment, scaling, and management.
+                    Consistent environments across development and production.
+                </p>
+                <ul class="feature-details">
+                    <li>Docker Compose support</li>
+                    <li>Easy scaling</li>
+                    <li>Isolated environments</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-icon-large">🔧</div>
+                    <h3>Proxy Configuration</h3>
+                </div>
+                <p>
+                    Flexible proxy configuration allows traffic inspection, filtering,
+                    and manipulation for debugging and monitoring purposes.
+                </p>
+                <ul class="feature-details">
+                    <li>HTTP/HTTPS proxy</li>
+                    <li>CONNECT method support</li>
+                    <li>Traffic logging</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-icon-large">⚙️</div>
+                    <h3>REST API</h3>
+                </div>
+                <p>
+                    Comprehensive RESTful API for programmatic access and integration
+                    with other systems and automation tools.
+                </p>
+                <ul class="feature-details">
+                    <li>Well-documented endpoints</li>
+                    <li>JSON responses</li>
+                    <li>Health check APIs</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-alt">
+    <div class="container">
+        <h2 class="section-title">Technical Specifications</h2>
+        <div class="specs-grid">
+            <div class="spec-item">
+                <h4>Protocols</h4>
+                <p>HTTP/1.1, HTTP/2, WebSocket, HTTPS</p>
+            </div>
+            <div class="spec-item">
+                <h4>Compression</h4>
+                <p>Gzip, Brotli, Zstandard</p>
+            </div>
+            <div class="spec-item">
+                <h4>Authentication</h4>
+                <p>Certificate-based, Token-based</p>
+            </div>
+            <div class="spec-item">
+                <h4>Deployment</h4>
+                <p>Docker, Kubernetes-ready</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
