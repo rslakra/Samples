@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Home - FastAPI Webapp{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="hero-title">Welcome to FastAPI Webapp</h1>
+            <p class="hero-subtitle">A FastAPI + Jinja2 starter application</p>
+            <p class="hero-description">
+                Server-rendered pages, static assets and a JSON API in one small, modern Python app.
+                Secure, scalable, and ready to build on.
+            </p>
+            <div class="hero-buttons">
+                <a href="/features" class="btn btn-primary">Explore Features</a>
+                <a href="/dashboard" class="btn btn-secondary">View Dashboard</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Key Highlights</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-icon">🚀</div>
+                <h3>High Performance</h3>
+                <p>Optimized for low latency and high throughput, ensuring smooth user experience.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">🔒</div>
+                <h3>Secure</h3>
+                <p>Enterprise-grade security with encrypted connections and MITM proxy support.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">📊</div>
+                <h3>Monitoring</h3>
+                <p>Real-time monitoring and analytics for all your user sessions.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">⚡</div>
+                <h3>Scalable</h3>
+                <p>Easily scale from a few users to thousands with our containerized architecture.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-alt">
+    <div class="container">
+        <h2 class="section-title">Quick Start</h2>
+        <div class="content-box">
+            <ol class="steps">
+                <li>
+                    <strong>Set up your environment:</strong>
+                    <code>cd fastapi-webapp-poc && python -m venv venv && source venv/bin/activate</code>
+                </li>
+                <li>
+                    <strong>Install dependencies:</strong>
+                    <code>pip install -r requirements.txt</code>
+                </li>
+                <li>
+                    <strong>Run the application:</strong>
+                    <code>python main.py</code>
+                </li>
+                <li>
+                    <strong>Access the app:</strong>
+                    Open your browser to <code>http://localhost:8000</code>
+                </li>
+            </ol>
+        </div>
+    </div>
+</section>
+{% endblock %}
