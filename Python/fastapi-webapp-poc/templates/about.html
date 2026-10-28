@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}About - FastAPI Webapp{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>About FastAPI Webapp</h1>
+        <p class="lead">Learn more about this sample web application</p>
+    </div>
+</div>
+
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Our Mission</h2>
+        <p class="section-prose">
+            This project aims to demonstrate a robust, scalable, and secure web application
+            structure. It leverages modern containerization technologies, proxy capabilities,
+            and advanced networking to deliver a seamless browser experience.
+        </p>
+    </div>
+</section>
+
+<section class="section section-alt">
+    <div class="container">
+        <h2 class="section-title">Technology Stack</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-icon-large">⚙️</div>
+                    <h3>Backend</h3>
+                </div>
+                <ul class="feature-details">
+                    <li>FastAPI - Modern Python web framework</li>
+                    <li>Uvicorn - ASGI server</li>
+                    <li>Jinja2 - Template engine</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-icon-large">🐳</div>
+                    <h3>Infrastructure</h3>
+                </div>
+                <ul class="feature-details">
+                    <li>Docker - Containerization</li>
+                    <li>Chrome Headless - Browser automation</li>
+                    <li>Custom MITM Proxy - Traffic inspection</li>
+                </ul>
+            </div>
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-icon-large">🔐</div>
+                    <h3>Security</h3>
+                </div>
+                <ul class="feature-details">
+                    <li>SSL/TLS Certificate Management</li>
+                    <li>Encrypted Proxy Connections</li>
+                    <li>Secure Session Handling</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">Features</h2>
+        <div class="specs-grid">
+            <div class="spec-item">
+                <span class="feature-icon" aria-hidden="true">✓</span>
+                <p>Headless Chrome browser support</p>
+            </div>
+            <div class="spec-item">
+                <span class="feature-icon" aria-hidden="true">✓</span>
+                <p>MITM proxy for traffic inspection</p>
+            </div>
+            <div class="spec-item">
+                <span class="feature-icon" aria-hidden="true">✓</span>
+                <p>Docker-based deployment</p>
+            </div>
+            <div class="spec-item">
+                <span class="feature-icon" aria-hidden="true">✓</span>
+                <p>Real-time monitoring dashboard</p>
+            </div>
+            <div class="spec-item">
+                <span class="feature-icon" aria-hidden="true">✓</span>
+                <p>RESTful API endpoints</p>
+            </div>
+            <div class="spec-item">
+                <span class="feature-icon" aria-hidden="true">✓</span>
+                <p>Responsive web interface</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-alt">
+    <div class="container">
+        <h2 class="section-title">Project Structure</h2>
+        <p class="section-prose">
+            The project is organized into modular components including a Chrome standalone service,
+            a custom proxy implementation, and this web application interface. Each component is
+            containerized for easy deployment and scaling.
+        </p>
+    </div>
+</section>
+{% endblock %}
