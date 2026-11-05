@@ -1,0 +1,106 @@
+PROJECT_NAME:="webapp-nodejs"
+DOCKER_CONTAINER_NAME:="webapp-nodejs"
+HOST_PORT:="3000"
+CONTAINER_PORT:="3000"
+DOCKER_IMAGE_TAG:="latest"
+
+
+###########################################################
+# Default
+###########################################################
+
+# List all recipes
+default:
+    just --list --unsorted
+
+
+###########################################################
+# WebApp: Build and Run Standalone Image
+###########################################################
+
+# Build WebApp Docker Image
+build-container:
+    docker build -f Dockerfile -t {{PROJECT_NAME}}:{{DOCKER_IMAGE_TAG}} .
+
+
+# Run WebApp Docker Container
+run-container:
+   docker run --rm \
+    --name {{DOCKER_CONTAINER_NAME}} \
+     -p {{HOST_PORT}}:{{CONTAINER_PORT}} \
+     -d {{PROJECT_NAME}}:{{DOCKER_IMAGE_TAG}}
+
+
+# Shows WebApp Docker Container Logs
+log-container:
+	docker logs -f {{DOCKER_CONTAINER_NAME}}
+
+
+# Executes a shell in the specified container, giving you a basic shell prompt.
+# The image is alpine based, so /bin/sh is used (there is no /bin/bash).
+# To exit back out of the container, type exit then press ENTER:
+shell-container:
+	docker exec -it {{DOCKER_CONTAINER_NAME}} /bin/sh
+
+
+# Stops WebApp Docker Container
+stop-container:
+	docker stop {{DOCKER_CONTAINER_NAME}}
+	# docker container rm {{DOCKER_CONTAINER_NAME}}
+
+# Curl the WebApp container health endpoint
+curl-container:
+    curl http://localhost:{{HOST_PORT}}/health
+
+# Curl the WebApp container root endpoint
+curl-root:
+    curl http://localhost:{{HOST_PORT}}/
+
+# Test access to the WebApp container
+test-access:
+    docker exec {{DOCKER_CONTAINER_NAME}} /bin/sh -c "whoami"
+
+
+
+###########################################################
+# WebApp: Docker Compose Instructions
+###########################################################
+
+# Starts WebApp Docker Compose
+start-app:
+    docker compose up --build
+
+# Starts WebApp Docker Compose in Background
+start-bg-app:
+    docker compose up --build -d
+
+# Stop WebApp Docker Compose
+stop-app:
+    docker compose down
+
+# Shows WebApp Docker Compose Logs
+log-app:
+    docker compose logs -f
+
+# Clean WebApp Docker Compose and remove images
+clean-app:
+    docker compose down --rmi local --volumes
+    # docker system prune -f
+    @echo "Containers stopped and images removed"
+
+
+###########################################################
+# WebApp: Kubernetes Instructions
+###########################################################
+
+# Deploy WebApp to the current kubectl context
+k8s-deploy:
+    kubectl apply -f deployment.yaml
+
+# Shows WebApp Kubernetes pod logs
+k8s-logs:
+    kubectl logs -l app={{PROJECT_NAME}} -f
+
+# Remove WebApp from the current kubectl context
+k8s-delete:
+    kubectl delete -f deployment.yaml
