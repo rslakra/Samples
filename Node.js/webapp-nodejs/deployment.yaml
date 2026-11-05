@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-nodejs
+  labels:
+    app: webapp-nodejs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp-nodejs
+  template:
+    metadata:
+      labels:
+        app: webapp-nodejs
+    spec:
+      containers:
+        - name: webapp-nodejs
+          # Image built by `just build-container`. Push it to a registry and
+          # switch imagePullPolicy to Always when deploying to a remote cluster.
+          image: webapp-nodejs:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: LOG_LEVEL
+              value: info
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-nodejs
+  labels:
+    app: webapp-nodejs
+spec:
+  type: ClusterIP
+  selector:
+    app: webapp-nodejs
+  ports:
+    - name: http
+      port: 3000
+      targetPort: http
