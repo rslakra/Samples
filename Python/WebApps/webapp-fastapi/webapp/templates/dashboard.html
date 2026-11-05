@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - VDI POC{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid var(--primary-color);
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--primary-color);
+        margin: 0.5rem 0;
+    }
+
+    .stat-label {
+        color: #666;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #e0e0e0;
+        border-radius: 4px;
+        overflow: hidden;
+        margin-top: 1rem;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: var(--primary-color);
+        transition: width 0.3s ease;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="container">
+        <h1>Dashboard</h1>
+        <p class="lead">Real-time system monitoring and analytics</p>
+    </div>
+</div>
+
+<section class="section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Active Sessions</div>
+                <div class="stat-value">{{ stats.active_sessions }}</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 70%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Total Users</div>
+                <div class="stat-value">{{ stats.total_users }}</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 85%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">CPU Usage</div>
+                <div class="stat-value">{{ stats.cpu_usage }}%</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ stats.cpu_usage }}%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Memory Usage</div>
+                <div class="stat-value">{{ stats.memory_usage }}%</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ stats.memory_usage }}%"></div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">System Status</h2>
+        <div class="content-box">
+            <table class="status-table">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Status</th>
+                        <th>Uptime</th>
+                        <th>Last Check</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Web Server</td>
+                        <td><span class="status-badge status-ok">Online</span></td>
+                        <td>99.8%</td>
+                        <td>Just now</td>
+                    </tr>
+                    <tr>
+                        <td>Chrome Proxy</td>
+                        <td><span class="status-badge status-ok">Online</span></td>
+                        <td>99.5%</td>
+                        <td>2 seconds ago</td>
+                    </tr>
+                    <tr>
+                        <td>MITM Service</td>
+                        <td><span class="status-badge status-ok">Online</span></td>
+                        <td>99.9%</td>
+                        <td>5 seconds ago</td>
+                    </tr>
+                    <tr>
+                        <td>Database</td>
+                        <td><span class="status-badge status-warning">Degraded</span></td>
+                        <td>98.2%</td>
+                        <td>10 seconds ago</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="section-title">Recent Activity</h2>
+        <div class="content-box">
+            <div class="activity-list">
+                <div class="activity-item">
+                    <span class="activity-time">2 minutes ago</span>
+                    <span class="activity-text">New session started: user@example.com</span>
+                </div>
+                <div class="activity-item">
+                    <span class="activity-time">5 minutes ago</span>
+                    <span class="activity-text">Certificate renewed successfully</span>
+                </div>
+                <div class="activity-item">
+                    <span class="activity-time">12 minutes ago</span>
+                    <span class="activity-text">System backup completed</span>
+                </div>
+                <div class="activity-item">
+                    <span class="activity-time">18 minutes ago</span>
+                    <span class="activity-text">Proxy configuration updated</span>
+                </div>
+                <div class="activity-item">
+                    <span class="activity-time">25 minutes ago</span>
+                    <span class="activity-text">3 sessions terminated normally</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-refresh dashboard data every 30 seconds
+    setInterval(function () {
+        console.log('Refreshing dashboard data...');
+        // In a real application, this would fetch fresh data from the API
+    }, 30000);
+</script>
+{% endblock %}
