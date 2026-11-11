@@ -1,0 +1,3 @@
+[submodule "SpringSecurity"]
+	path = SpringSecurity
+	url = git@github.com:rslakra/SpringSecurity.git
