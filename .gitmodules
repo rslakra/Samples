@@ -1,3 +1,7 @@
+[submodule "Python/PythonPackaging"]
+	path = Python/PythonPackaging
+	url = git@github.com:rslakra/PythonPackaging.git
 [submodule "SpringSecurity"]
 	path = SpringSecurity
 	url = git@github.com:rslakra/SpringSecurity.git
+
