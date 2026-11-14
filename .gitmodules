@@ -1,6 +1,9 @@
 [submodule "Gradle"]
 	path = Gradle
 	url = git@github.com:rslakra/Gradle.git
+[submodule "NodeJS"]
+	path = NodeJS
+	url = git@github.com:rslakra/NodeJS.git
 [submodule "Nomen"]
 	path = Nomen
 	url = git@github.com:rslakra/Nomen.git
