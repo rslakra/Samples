@@ -4,11 +4,11 @@ on:
   push:
     paths:
       - "Python/LogParserWebApp/**"
-      - ".github/workflows/log-parser-webapp-ci.yml"
+      - ".github/workflows/python-log-parser-webapp-ci.yml"
   pull_request:
     paths:
       - "Python/LogParserWebApp/**"
-      - ".github/workflows/log-parser-webapp-ci.yml"
+      - ".github/workflows/python-log-parser-webapp-ci.yml"
   workflow_dispatch:
 
 defaults:
