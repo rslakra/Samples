@@ -1,0 +1,87 @@
+name: Node.js - TestApp React Native CI
+
+on:
+  push:
+    paths:
+      - "Node.js/testapp-reactnative/**"
+      - ".github/workflows/nodejs-testapp-reactnative-ci.yml"
+  pull_request:
+    paths:
+      - "Node.js/testapp-reactnative/**"
+      - ".github/workflows/nodejs-testapp-reactnative-ci.yml"
+  workflow_dispatch:
+
+jobs:
+  # The React Native app itself (JavaScript side only, no Android/iOS build).
+  app:
+    name: App
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Node.js/testapp-reactnative
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: Node.js/testapp-reactnative/package-lock.json
+
+      # --legacy-peer-deps is needed because package.json pins react-native-screens ^3.29 while
+      # @react-navigation/native-stack 7 asks for >= 4, so a plain "npm ci" stops with ERESOLVE.
+      # Remove the flag once those two versions are aligned.
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps --ignore-scripts
+
+      # The project has no tests yet, so jest is told that finding none is fine.
+      # "npm run lint" is not run: ESLint currently crashes here ("prettier.resolveConfig.sync is not a
+      # function", an eslint-plugin-prettier / Prettier 3 mismatch). Add it once that is fixed.
+      - name: Run unit tests
+        run: npx jest --passWithNoTests
+
+  # The small Express API that the app talks to.
+  backend:
+    name: Backend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Node.js/testapp-reactnative/backend
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 20
+
+      # The backend's .gitignore excludes package-lock.json, so there is no lockfile:
+      # "npm ci" would fail and the npm cache can't be keyed on a lockfile.
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Check the code
+        run: node --check server.js
+
+      - name: Smoke test the server
+        run: |
+          PORT=4000 node server.js &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for _ in $(seq 1 20); do
+            curl -fsS http://localhost:4000/health > /dev/null 2>&1 && break
+            sleep 1
+          done
+          curl -fsS http://localhost:4000/health
+          echo
+          curl -fsS http://localhost:4000/info
+          echo
+          curl -fsS -X POST http://localhost:4000/echo -H "Content-Type: application/json" -d '{"message":"hello"}'
+          echo
+          curl -fsS http://localhost:4000/test/awesome
+          echo
+          curl -fsS http://localhost:4000/api
+          echo

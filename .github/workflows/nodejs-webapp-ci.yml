@@ -1,0 +1,64 @@
+name: Node.js - WebApp CI
+
+on:
+  push:
+    paths:
+      - "Node.js/webapp-nodejs/**"
+      - ".github/workflows/nodejs-webapp-ci.yml"
+  pull_request:
+    paths:
+      - "Node.js/webapp-nodejs/**"
+      - ".github/workflows/nodejs-webapp-ci.yml"
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: Node.js/webapp-nodejs
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: Node.js/webapp-nodejs/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      # The project has no automated tests yet (its "npm test" is a placeholder that fails),
+      # so this checks that the code parses and that the server starts and answers its endpoints.
+      - name: Check the code
+        run: node --check app/server.js
+
+      - name: Smoke test the server
+        run: |
+          PORT=3000 node app/server.js &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for _ in $(seq 1 20); do
+            curl -fsS http://localhost:3000/health > /dev/null 2>&1 && break
+            sleep 1
+          done
+          curl -fsS http://localhost:3000/health
+          echo
+          curl -fsS http://localhost:3000/
+          echo
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      # Only builds the image (to catch a broken Dockerfile); it never pushes.
+      - name: Build image
+        uses: docker/build-push-action@v7
+        with:
+          context: Node.js/webapp-nodejs
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

@@ -1,0 +1,58 @@
+name: Node.js - TestApp CI
+
+on:
+  push:
+    paths:
+      - "Node.js/testapp-nodejs/**"
+      - ".github/workflows/nodejs-testapp-ci.yml"
+  pull_request:
+    paths:
+      - "Node.js/testapp-nodejs/**"
+      - ".github/workflows/nodejs-testapp-ci.yml"
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: Node.js/testapp-nodejs
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 20
+
+      # This project's .gitignore excludes package-lock.json, so there is no lockfile:
+      # "npm ci" would fail and the npm cache can't be keyed on a lockfile.
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      # The project has no automated tests, so this checks that the code parses and that the
+      # server starts and answers its endpoints (the same ones test.sh exercises).
+      - name: Check the code
+        run: node --check server.js
+
+      - name: Smoke test the server
+        run: |
+          PORT=4000 node server.js &
+          server_pid=$!
+          trap 'kill "$server_pid"' EXIT
+          for _ in $(seq 1 20); do
+            curl -fsS http://localhost:4000/health > /dev/null 2>&1 && break
+            sleep 1
+          done
+          curl -fsS http://localhost:4000/health
+          echo
+          curl -fsS http://localhost:4000/info
+          echo
+          curl -fsS -X POST http://localhost:4000/echo -H "Content-Type: application/json" -d '{"message":"hello"}'
+          echo
+          curl -fsS http://localhost:4000/test/awesome
+          echo
+          curl -fsS http://localhost:4000/api
+          echo

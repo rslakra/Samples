@@ -4,11 +4,11 @@ on:
   push:
     paths:
       - "Python/WebCrawler/**"
-      - ".github/workflows/webcrawler-ci.yml"
+      - ".github/workflows/python-webcrawler-ci.yml"
   pull_request:
     paths:
       - "Python/WebCrawler/**"
-      - ".github/workflows/webcrawler-ci.yml"
+      - ".github/workflows/python-webcrawler-ci.yml"
   workflow_dispatch:
 
 defaults:
