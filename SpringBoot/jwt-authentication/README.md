@@ -217,7 +217,7 @@ curl -X GET http://localhost:8080/jwt-authentication/rest/v1/admin \
 4. **Access Protected Endpoints**
    - Method: GET
    - URL: `http://localhost:8080/jwt-authentication/rest/v1/user`
-   - Headers: `Authorization: Bearer {{jwt_token}}`
+   - Headers: `Authorization: Bearer {% raw %}{{jwt_token}}{% endraw %}`
 
 ## Configuration
 

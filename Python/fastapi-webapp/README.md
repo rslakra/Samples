@@ -90,6 +90,7 @@ To add a new page to the application:
 
 1. **Create a new template** in `templates/` directory:
    ```html
+   {% raw %}
    {% extends "base.html" %}
    
    {% block title %}Your Page Title{% endblock %}
@@ -107,6 +108,7 @@ To add a new page to the application:
        </div>
    </section>
    {% endblock %}
+   {% endraw %}
    ```
 
 2. **Add a route** in `app/routers/index.py` (or a new router included from `app/main.py`):
@@ -125,7 +127,7 @@ To add a new page to the application:
 
 3. **Update navigation** in `webapp/templates/base.html` (if needed):
    ```html
-   <li><a href="/yourpage" class="{% if page == 'yourpage' %}active{% endif %}">Your Page</a></li>
+   {% raw %}<li><a href="/yourpage" class="{% if page == 'yourpage' %}active{% endif %}">Your Page</a></li>{% endraw %}
    ```
 
 ## API Documentation

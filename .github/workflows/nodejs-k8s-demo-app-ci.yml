@@ -1,6 +1,6 @@
-name: k8s-demo-app CI
+name: Node.js - k8s-demo-app CI
 
-# Builds the k8s-demo-app image on every pull request, and on a push to master also pushes it to
+# Builds the Node.js/k8s-demo-app image on every pull request, and on a push to master also pushes it to
 # GitHub Container Registry and updates the image tag in the ArgoCD config repo, so ArgoCD deploys it.
 #
 # Required secret: INFRA_REPO_TOKEN - a token that can push to rslakra/Infrastructure
@@ -17,12 +17,12 @@ on:
   pull_request:
     paths:
       - "Node.js/k8s-demo-app/**"
-      - ".github/workflows/k8s-demo-app-ci.yml"
+      - ".github/workflows/nodejs-k8s-demo-app-ci.yml"
   push:
     branches: [master]
     paths:
       - "Node.js/k8s-demo-app/**"
-      - ".github/workflows/k8s-demo-app-ci.yml"
+      - ".github/workflows/nodejs-k8s-demo-app-ci.yml"
   workflow_dispatch:
 
 jobs:
@@ -71,7 +71,8 @@ jobs:
           token: ${{ secrets.INFRA_REPO_TOKEN }}
 
       - name: Point the deployment at the new image
-        run: sed -i "s|image: ${IMAGE_NAME}:.*|image: ${IMAGE_NAME}:${GITHUB_SHA}|" "${CONFIG_FILE}"
+        run: |
+          sed -i "s|image: ${IMAGE_NAME}:.*|image: ${IMAGE_NAME}:${GITHUB_SHA}|" "${CONFIG_FILE}"
 
       - name: Commit and push
         run: |
